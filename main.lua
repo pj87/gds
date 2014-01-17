@@ -143,9 +143,10 @@ function love.draw()
 	love.graphics.push() 
 	width = 48 
     height = 57 
-    love.graphics.translate(width/2, height/2) 
-    love.graphics.rotate(angle) 
     --love.graphics.translate(width/2, height/2) 
+    love.graphics.translate(-75, -85)
+	love.graphics.rotate(angle) 
+    --love.graphics.translate(hero.x, hero.y) 
 	love.graphics.draw(statek, width, height) 
 	love.graphics.pop() 
 	
