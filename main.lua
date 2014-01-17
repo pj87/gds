@@ -59,9 +59,9 @@ function love.update(dt)
        --objects.ball.body:applyForce(-400, 0)
 	   angle = angle - dt * math.pi/2
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the ball in the air
-       objects.ball.body:applyForce(0, -400)
-	elseif love.keyboard.isDown("down") then --press the up arrow key to set the ball in the air
-       objects.ball.body:applyForce(0, 400)
+       objects.ball.body:applyForce(20 * math.sin(angle), -20 * math.cos(angle))
+	--elseif love.keyboard.isDown("down") then --press the up arrow key to set the ball in the air
+       --objects.ball.body:applyForce(math.cos(angle), 400)
     end
 
 	angle = angle % (2*math.pi)
