@@ -53,7 +53,9 @@ function love.update(dt)
     elseif love.keyboard.isDown("left") then --press the left arrow key to push the ball to the left
        objects.ball.body:applyForce(-400, 0)
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the ball in the air
-       objects.ball.body:setPosition(650/2, 650/2)
+       objects.ball.body:applyForce(0, -400)
+	elseif love.keyboard.isDown("down") then --press the up arrow key to set the ball in the air
+       objects.ball.body:applyForce(0, 400)
     end
 
     -- keyboard actions for our hero
