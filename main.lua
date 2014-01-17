@@ -19,6 +19,7 @@ function love.load()
 
     bg = love.graphics.newImage("bg.png")
 	statek = love.graphics.newImage("statek.png") 
+	pocisk = love.graphics.newImage("pocisk.png") 
 	
     hero = {} -- new table for the hero
     hero.x = 300    -- x,y coordinates of the hero
@@ -80,7 +81,8 @@ function love.update(dt)
     for i,v in ipairs(hero.shots) do
 
         -- move them up up up
-        v.y = v.y - dt * 100
+        v.x = v.x + v.dx * dt * 100 
+		v.y = v.y + v.dy * dt * 100 
 
         -- mark shots that are not visible for removal
         if v.y < 0 then
@@ -154,7 +156,8 @@ function love.draw()
     -- let's draw our heros shots
     love.graphics.setColor(255,255,255,255)
     for i,v in ipairs(hero.shots) do
-        love.graphics.rectangle("fill", v.x, v.y, 24, 29)
+        --love.graphics.rectangle("fill", v.x, v.y, 24, 29) 
+		love.graphics.draw(pocisk, v.x, v.y) 
     end
     -- let's draw our enemies
     love.graphics.setColor(0,255,255,255)
@@ -170,7 +173,9 @@ function shoot()
     local shot = {}
     shot.x = hero.x+hero.width/2
     shot.y = hero.y
-
+	shot.dx = math.sin(angle) 
+	shot.dy = math.cos(angle) 
+	
     table.insert(hero.shots, shot)
 
 end
