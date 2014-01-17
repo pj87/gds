@@ -140,20 +140,20 @@ function love.draw()
     love.graphics.setColor(255,255,0,255)
     love.graphics.rectangle("fill", hero.x, hero.y, hero.width, hero.height)
 
-	love.graphics.push() 
-	width = 48 
-    height = 57 
+	--love.graphics.push() 
+	--width = 48 
+    --height = 57 
     --love.graphics.translate(width/2, height/2) 
-    love.graphics.translate(-75, -85)
-	love.graphics.rotate(angle) 
+    --love.graphics.translate(-75, -75)
+	--love.graphics.rotate(angle) 
     --love.graphics.translate(hero.x, hero.y) 
-	love.graphics.draw(statek, width, height) 
-	love.graphics.pop() 
+	love.graphics.draw(statek, hero.x, hero.y, angle, 1, 1, 25, 25) 
+	--love.graphics.pop() 
 	
     -- let's draw our heros shots
     love.graphics.setColor(255,255,255,255)
     for i,v in ipairs(hero.shots) do
-        love.graphics.rectangle("fill", v.x, v.y, 2, 5)
+        love.graphics.rectangle("fill", v.x, v.y, 24, 29)
     end
     -- let's draw our enemies
     love.graphics.setColor(0,255,255,255)
