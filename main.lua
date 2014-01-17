@@ -1,7 +1,3 @@
-
--- tutorial #2
--- added enemys, shooting, background etc.
-
 local angle = 0
 
 function love.load()
@@ -10,13 +6,17 @@ function love.load()
 
     objects = {} -- table to hold all our physical objects 
 
-    --let's create a ball
-    objects.ball = {}
-    objects.ball.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around
-    objects.ball.shape = love.physics.newCircleShape(20) --the ball's shape has a radius of 20
-    objects.ball.fixture = love.physics.newFixture(objects.ball.body, objects.ball.shape, 1) -- Attach fixture to body and give it a density of 1.
-    objects.ball.fixture:setRestitution(0.9) --let the ball bounce
-
+    --let's create a player
+    objects.player = {}
+    objects.player.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around
+    --objects.player.shape = love.physics.newCircleShape(20) --the player's shape has a radius of 20
+    --objects.player.fixture = love.physics.newFixture(objects.player.body, objects.player.shape, 1) -- Attach fixture to body and give it a density of 1.
+    --objects.player.fixture:setRestitution(0.9) --let the player bounce
+	
+	--objects.enemies = {}
+    --objects.enemy1.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") 
+	
+	
     bg = love.graphics.newImage("bg.png")
 	statek = love.graphics.newImage("statek.png") 
 	pocisk = love.graphics.newImage("pocisk.png") 
@@ -52,17 +52,17 @@ function love.update(dt)
     world:update(dt)
 	
     --here we are going to create some keyboard events
-    if love.keyboard.isDown("right") then --press the right arrow key to push the ball to the right
-       --objects.ball.body:applyForce(400, 0) 
+    if love.keyboard.isDown("right") then --press the right arrow key to push the player to the right
+       --objects.player.body:applyForce(400, 0) 
 	   angle = angle + dt * math.pi/2
 	   --love.graphics.rotate(angle)
-    elseif love.keyboard.isDown("left") then --press the left arrow key to push the ball to the left
-       --objects.ball.body:applyForce(-400, 0)
+    elseif love.keyboard.isDown("left") then --press the left arrow key to push the player to the left
+       --objects.player.body:applyForce(-400, 0)
 	   angle = angle - dt * math.pi/2
-    elseif love.keyboard.isDown("up") then --press the up arrow key to set the ball in the air
-       objects.ball.body:applyForce(20 * math.sin(angle), -20 * math.cos(angle))
-	--elseif love.keyboard.isDown("down") then --press the up arrow key to set the ball in the air
-       --objects.ball.body:applyForce(math.cos(angle), 400)
+    elseif love.keyboard.isDown("up") then --press the up arrow key to set the player in the air
+       objects.player.body:applyForce(20 * math.sin(angle), -20 * math.cos(angle))
+	--elseif love.keyboard.isDown("down") then --press the up arrow key to set the player in the air
+       --objects.player.body:applyForce(math.cos(angle), 400)
     end
 
 	angle = angle % (2*math.pi)
@@ -135,8 +135,8 @@ function love.draw()
     love.graphics.setColor(0,255,0,255)
     love.graphics.rectangle("fill", 0, 465, 800, 150)
 
-    love.graphics.setColor(193, 47, 14) --set the drawing color to red for the ball
-    love.graphics.circle("fill", objects.ball.body:getX(), objects.ball.body:getY(), objects.ball.shape:getRadius())
+    --love.graphics.setColor(193, 47, 14) --set the drawing color to red for the player
+    --love.graphics.circle("fill", objects.player.body:getX(), objects.player.body:getY(), objects.player.shape:getRadius())
 
     -- let's draw our hero
 	--love.graphics.rotate(angle)
@@ -150,7 +150,7 @@ function love.draw()
     --love.graphics.translate(-75, -75)
 	--love.graphics.rotate(angle) 
     --love.graphics.translate(hero.x, hero.y) 
-	love.graphics.draw(statek, objects.ball.body:getX(), objects.ball.body:getY(), angle, 1, 1, 25, 25) 
+	love.graphics.draw(statek, objects.player.body:getX(), objects.player.body:getY(), angle, 1, 1, 25, 25) 
 	love.graphics.pop() 
 	
     -- let's draw our heros shots
@@ -171,8 +171,8 @@ end
 function shoot()
 
     local shot = {}
-    shot.x = objects.ball.body:getX()+hero.width/2
-    shot.y = objects.ball.body:getY()
+    shot.x = objects.player.body:getX()+hero.width/2
+    shot.y = objects.player.body:getY()
 	shot.dx = math.sin(angle) 
 	shot.dy = -math.cos(angle) 
 	
