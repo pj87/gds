@@ -49,22 +49,23 @@ end
 
 function love.update(dt)
     world:update(dt)
-
-	angle = angle + dt * math.pi/2
-    angle = angle % (2*math.pi)
 	
     --here we are going to create some keyboard events
     if love.keyboard.isDown("right") then --press the right arrow key to push the ball to the right
-       objects.ball.body:applyForce(400, 0)
+       --objects.ball.body:applyForce(400, 0) 
+	   angle = angle + dt * math.pi/2
 	   --love.graphics.rotate(angle)
     elseif love.keyboard.isDown("left") then --press the left arrow key to push the ball to the left
-       objects.ball.body:applyForce(-400, 0)
+       --objects.ball.body:applyForce(-400, 0)
+	   angle = angle - dt * math.pi/2
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the ball in the air
        objects.ball.body:applyForce(0, -400)
 	elseif love.keyboard.isDown("down") then --press the up arrow key to set the ball in the air
        objects.ball.body:applyForce(0, 400)
     end
 
+	angle = angle % (2*math.pi)
+	
     -- keyboard actions for our hero
     if love.keyboard.isDown("left") then
         hero.x = hero.x - hero.speed*dt
@@ -140,15 +141,15 @@ function love.draw()
     love.graphics.setColor(255,255,0,255)
     love.graphics.rectangle("fill", hero.x, hero.y, hero.width, hero.height)
 
-	--love.graphics.push() 
+	love.graphics.push() 
 	--width = 48 
     --height = 57 
     --love.graphics.translate(width/2, height/2) 
     --love.graphics.translate(-75, -75)
 	--love.graphics.rotate(angle) 
     --love.graphics.translate(hero.x, hero.y) 
-	love.graphics.draw(statek, hero.x, hero.y, angle, 1, 1, 25, 25) 
-	--love.graphics.pop() 
+	love.graphics.draw(statek, objects.ball.body:getX(), objects.ball.body:getY(), angle, 1, 1, 25, 25) 
+	love.graphics.pop() 
 	
     -- let's draw our heros shots
     love.graphics.setColor(255,255,255,255)
