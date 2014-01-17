@@ -171,10 +171,10 @@ end
 function shoot()
 
     local shot = {}
-    shot.x = hero.x+hero.width/2
-    shot.y = hero.y
+    shot.x = objects.ball.body:getX()+hero.width/2
+    shot.y = objects.ball.body:getY()
 	shot.dx = math.sin(angle) 
-	shot.dy = math.cos(angle) 
+	shot.dy = -math.cos(angle) 
 	
     table.insert(hero.shots, shot)
 
