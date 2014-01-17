@@ -2,6 +2,8 @@
 -- tutorial #2
 -- added enemys, shooting, background etc.
 
+local angle = 0
+
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
@@ -16,7 +18,8 @@ function love.load()
     objects.ball.fixture:setRestitution(0.9) --let the ball bounce
 
     bg = love.graphics.newImage("bg.png")
-
+	statek = love.graphics.newImage("statek.png") 
+	
     hero = {} -- new table for the hero
     hero.x = 300    -- x,y coordinates of the hero
     hero.y = 450
@@ -47,9 +50,13 @@ end
 function love.update(dt)
     world:update(dt)
 
+	angle = angle + dt * math.pi/2
+    angle = angle % (2*math.pi)
+	
     --here we are going to create some keyboard events
     if love.keyboard.isDown("right") then --press the right arrow key to push the ball to the right
        objects.ball.body:applyForce(400, 0)
+	   --love.graphics.rotate(angle)
     elseif love.keyboard.isDown("left") then --press the left arrow key to push the ball to the left
        objects.ball.body:applyForce(-400, 0)
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the ball in the air
@@ -129,9 +136,19 @@ function love.draw()
     love.graphics.circle("fill", objects.ball.body:getX(), objects.ball.body:getY(), objects.ball.shape:getRadius())
 
     -- let's draw our hero
+	--love.graphics.rotate(angle)
     love.graphics.setColor(255,255,0,255)
     love.graphics.rectangle("fill", hero.x, hero.y, hero.width, hero.height)
 
+	love.graphics.push() 
+	width = 48 
+    height = 57 
+    love.graphics.translate(width/2, height/2) 
+    love.graphics.rotate(angle) 
+    --love.graphics.translate(width/2, height/2) 
+	love.graphics.draw(statek, width, height) 
+	love.graphics.pop() 
+	
     -- let's draw our heros shots
     love.graphics.setColor(255,255,255,255)
     for i,v in ipairs(hero.shots) do
@@ -141,7 +158,9 @@ function love.draw()
     love.graphics.setColor(0,255,255,255)
     for i,v in ipairs(enemies) do
         love.graphics.rectangle("fill", v.x, v.y, v.width, v.height)
-    end
+    end 
+	
+	love.graphics.print(angle, 100, 100); 
 end
 
 function shoot()
