@@ -16,7 +16,20 @@ function love.load()
 	--objects.enemies = {}
     --objects.enemy1.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") 
 	
+	objects.asteroid = {} 
+	objects.asteroid.bodies = {}
 	
+	--table.insert(objects.asteroid.bodies, love.physics.newBody(world, math.random(200), math.random(200)))
+	
+	for i=1, 10 do 
+		table.insert(objects.asteroid.bodies, love.physics.newBody(world, math.random(200), math.random(200)))
+    --objects.asteroids[i 
+    end 
+	
+    --for i=1, 10 do 
+    --  objects.asteroids[i].body = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around
+    --end 
+
     bg = love.graphics.newImage("bg.png")
 	statek = love.graphics.newImage("statek.png") 
 	pocisk = love.graphics.newImage("pocisk.png") 
@@ -60,7 +73,7 @@ function love.update(dt)
        --objects.player.body:applyForce(-400, 0)
 	   angle = angle - dt * math.pi/2
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the player in the air
-       objects.player.body:applyForce(20 * math.sin(angle), -20 * math.cos(angle))
+       objects.player.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle))
 	--elseif love.keyboard.isDown("down") then --press the up arrow key to set the player in the air
        --objects.player.body:applyForce(math.cos(angle), 400)
     end
@@ -153,16 +166,21 @@ function love.draw()
 	love.graphics.draw(statek, objects.player.body:getX(), objects.player.body:getY(), angle, 1, 1, 25, 25) 
 	love.graphics.pop() 
 	
-    -- let's draw our heros shots
-    love.graphics.setColor(255,255,255,255)
-    for i,v in ipairs(hero.shots) do
+	for i,v in ipairs(objects.asteroid.bodies) do 
+      --objects.asteroids[i] = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around 
+	  love.graphics.draw(statek, v:getX(), v:getY()) 
+    end 
+	
+    -- let's draw our heros shots 
+    love.graphics.setColor(255,255,255,255) 
+    for i,v in ipairs(hero.shots) do 
         --love.graphics.rectangle("fill", v.x, v.y, 24, 29) 
 		love.graphics.draw(pocisk, v.x, v.y) 
     end
-    -- let's draw our enemies
-    love.graphics.setColor(0,255,255,255)
-    for i,v in ipairs(enemies) do
-        love.graphics.rectangle("fill", v.x, v.y, v.width, v.height)
+    -- let's draw our enemies 
+    love.graphics.setColor(0,255,255,255) 
+    for i,v in ipairs(enemies) do 
+        love.graphics.rectangle("fill", v.x, v.y, v.width, v.height) 
     end 
 	
 	love.graphics.print(angle, 100, 100); 
