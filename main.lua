@@ -131,9 +131,9 @@ function love.draw()
     love.graphics.setColor(255,255,255,255)
     love.graphics.draw(bg)
 
-    -- let's draw some ground
-    love.graphics.setColor(0,255,0,255)
-    love.graphics.rectangle("fill", 0, 465, 800, 150)
+    -- let's draw some ground - tutorial leftovers
+    -- love.graphics.setColor(0,255,0,255)
+    -- love.graphics.rectangle("fill", 0, 465, 800, 150)
 
     --love.graphics.setColor(193, 47, 14) --set the drawing color to red for the player
     --love.graphics.circle("fill", objects.player.body:getX(), objects.player.body:getY(), objects.player.shape:getRadius())
@@ -141,7 +141,8 @@ function love.draw()
     -- let's draw our hero
 	--love.graphics.rotate(angle)
     love.graphics.setColor(255,255,0,255)
-    love.graphics.rectangle("fill", hero.x, hero.y, hero.width, hero.height)
+	-- tutorial leftovers
+    --love.graphics.rectangle("fill", hero.x, hero.y, hero.width, hero.height)
 
 	love.graphics.push() 
 	--width = 48 
@@ -159,13 +160,14 @@ function love.draw()
         --love.graphics.rectangle("fill", v.x, v.y, 24, 29) 
 		love.graphics.draw(pocisk, v.x, v.y) 
     end
-    -- let's draw our enemies
-    love.graphics.setColor(0,255,255,255)
-    for i,v in ipairs(enemies) do
-        love.graphics.rectangle("fill", v.x, v.y, v.width, v.height)
-    end 
+    -- let's draw our enemies -- tutorial leftovers
+    --love.graphics.setColor(0,255,255,255)
+    --for i,v in ipairs(enemies) do
+    --    love.graphics.rectangle("fill", v.x, v.y, v.width, v.height)
+   -- end 
 	
-	love.graphics.print(angle, 100, 100); 
+	-- tutorial leftovers
+	--love.graphics.print(angle, 100, 100); 
 end
 
 function shoot()
