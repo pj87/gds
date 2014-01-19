@@ -18,7 +18,7 @@ function love.load()
 	
 	objects.asteroid = {} 
 	objects.asteroid.body = {}
-	
+	objects.asteroid.size = {} -- There are three sizes of asteroids (big, medim, small) 
 	--objects.asteroid.body = love.physics.newBody(world, 400, 400, "dynamic") 
 	--objects.asteroid.body:applyForce(100, 100) 
 	--b = love.physics.newBody(world, math.random(600), math.random(600), "dynamic") 
@@ -29,9 +29,12 @@ function love.load()
 	
 	for i=1, 10 do 
 		b = love.physics.newBody(world, math.random(600), math.random(600), "dynamic") 
+		b:setMass(1); 
+		b.angle = 1.6; 
 		--b:applyForce(math.cos(math.random(400)), math.random(400)) 
 	--	b:applyForce(math.cos(1.6), 400) 
-		table.insert(objects.asteroid.body, b)
+		table.insert(objects.asteroid.body, b) 
+		table.insert(objects.asteroid.size, 3) 
     --objects.asteroids[i 
     end 
 	
@@ -42,7 +45,9 @@ function love.load()
     bg = love.graphics.newImage("bg.png")
 	statek = love.graphics.newImage("statek.png") 
 	pocisk = love.graphics.newImage("pocisk.png") 
-	asteroida = love.graphics.newImage("asteroida.png") 
+	duza_asteroida = love.graphics.newImage("duza_asteroida.png") 
+	srednia_asteroida = love.graphics.newImage("srednia_asteroida.png") 
+	mala_asteroida = love.graphics.newImage("mala_asteroida.png") 
 	
     hero = {} -- new table for the hero
     hero.x = 300    -- x,y coordinates of the hero
@@ -85,12 +90,12 @@ function love.update(dt)
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the player in the air
        objects.player.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle))
 	elseif love.keyboard.isDown("down") then --press the up arrow key to set the player in the air
-	   objects.player.body:applyForce(100, 100) 
+	   --objects.player.body:applyForce(math.rand(50) * math.sin(), 100) 
 	   --objects.asteroid.body:applyForce(100, 100) 
 	   for i,v in ipairs(objects.asteroid.body) do 
 			--objects.asteroids[i] = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around 
 			--love.graphics.draw(asteroida, v:getX(), v:getY()) 
-			v:applyForce(100, 100)
+			v:applyForce(math.rand(50) * math.sin(v.angle), math.rand(50) * math.sin(v.angle))
 		end 
        --objects.player.body:applyForce(math.cos(angle), 400)
     end
@@ -189,7 +194,7 @@ function love.draw()
 	
 	for i,v in ipairs(objects.asteroid.body) do 
       --objects.asteroids[i] = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around 
-	  love.graphics.draw(asteroida, v:getX(), v:getY()) 
+	  love.graphics.draw(duza_asteroida, v:getX(), v:getY()) 
     end 
 	
     -- let's draw our heros shots 
