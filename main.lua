@@ -16,6 +16,19 @@ function love.load()
 	--objects.enemies = {}
     --objects.enemy1.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") 
 	
+	objects.tab = {} 
+	objects.tab[1] = {} 
+	objects.tab[1].body = love.physics.newBody(world, 650/2, 650/2, "dynamic")
+	objects.tab[1].health = 100 
+	
+	family = {}
+    family[1]={}
+    family[1].mother="Angie"
+    family[1].father="Michael"
+    family[1].children={}
+    family[1].children[1]="Jessica"
+    family[1].children[2]="Thomas"
+	
 	objects.asteroid = {} 
 	objects.asteroid.body = {}
 	objects.asteroid.size = {} -- There are three sizes of asteroids (big, medim, small) 
@@ -30,7 +43,7 @@ function love.load()
 	for i=1, 10 do 
 		b = love.physics.newBody(world, math.random(600), math.random(600), "dynamic") 
 		b:setMass(1); 
-		b.angle = 1.6; 
+		--b.angle = 1.6; 
 		--b:applyForce(math.cos(math.random(400)), math.random(400)) 
 	--	b:applyForce(math.cos(1.6), 400) 
 		table.insert(objects.asteroid.body, b) 
@@ -96,6 +109,7 @@ function love.update(dt)
 			--objects.asteroids[i] = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around 
 			--love.graphics.draw(asteroida, v:getX(), v:getY()) 
 			v:applyForce(math.rand(50) * math.sin(v.angle), math.rand(50) * math.sin(v.angle))
+			--objects.asteroid[i].size
 		end 
        --objects.player.body:applyForce(math.cos(angle), 400)
     end
