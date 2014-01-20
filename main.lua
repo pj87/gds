@@ -42,8 +42,8 @@ function love.load()
 		objects.asteroids[i] = {} 
 		objects.asteroids[i].body = love.physics.newBody(world, math.random(500), math.random(500), "dynamic")
 		objects.asteroids[i].size = 3 
-		objects.asteroids[i].speed = math.random(50) 
-		objects.asteroids[i].angle = math.random(6) 
+		objects.asteroids[i].speed = math.random(250) 
+		objects.asteroids[i].angle = math.random(6.283) 
     end 
 	
 	--for j = 1, 10 do 
@@ -113,7 +113,7 @@ function love.update(dt)
 		
 	for i = 1, 10 do 
 		angle = objects.asteroids[i].angle 
-		speed = objects.asteroids[i].speed * 10 
+		speed = objects.asteroids[i].speed 
 		objects.asteroids[i].body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
 	end 
        --objects.player.body:applyForce(math.cos(angle), 400)
