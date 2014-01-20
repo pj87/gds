@@ -40,8 +40,9 @@ function love.load()
 	
 	for i = 1, 10 do 
 		objects.asteroids[i] = {} 
-		objects.asteroids[i].body = love.physics.newBody(world, 650/2, 650/2, "dynamic")
+		objects.asteroids[i].body = love.physics.newBody(world, math.random(500), math.random(500), "dynamic")
 		objects.asteroids[i].size = 3 
+		objects.asteroids[i].speed = math.random(50) 
 		objects.asteroids[i].angle = math.random(6) 
     end 
 	
@@ -103,14 +104,20 @@ function love.update(dt)
 	elseif love.keyboard.isDown("down") then --press the up arrow key to set the player in the air
 	   --objects.player.body:applyForce(math.rand(50) * math.sin(), 100) 
 	   --objects.asteroid.body:applyForce(100, 100) 
-	   for i,v in ipairs(objects.asteroid.body) do 
+	   --for i,v in ipairs(objects.asteroid.body) do 
 			--objects.asteroids[i] = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around 
 			--love.graphics.draw(asteroida, v:getX(), v:getY()) 
-			v:applyForce(math.rand(50) * math.sin(v.angle), math.rand(50) * math.sin(v.angle))
+			--v:applyForce(math.rand(50) * math.sin(v.angle), math.rand(50) * math.sin(v.angle))
 			--objects.asteroid[i].size
-		end 
+		--end 
+		
+	for i = 1, 10 do 
+		angle = objects.asteroids[i].angle 
+		speed = objects.asteroids[i].speed * 10 
+		objects.asteroids[i].body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
+	end 
        --objects.player.body:applyForce(math.cos(angle), 400)
-    end
+end
 
 	--objects.asteroid.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle))
 	
