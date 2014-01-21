@@ -226,11 +226,9 @@ function love.draw()
 	
 	for i=1, num_asteroids do 
 		--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 
-		
-
 		if (objects.asteroids[i].size == 3) then 
 			love.graphics.draw(duza_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
-			love.graphics.print(i, 0, i * 30) 
+			--love.graphics.print(i, 0, i * 30) 
 			love.graphics.print(objects.asteroids[i].body:getX(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 25) 
 			love.graphics.print(objects.asteroids[i].body:getY(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 35) 
 		elseif (objects.asteroids[i].size == 2) then 
@@ -249,6 +247,8 @@ function love.draw()
     for i,v in ipairs(hero.shots) do 
         --love.graphics.rectangle("fill", v.x, v.y, 24, 29) 
 		love.graphics.draw(pocisk, v.x, v.y) 
+		love.graphics.print(v.x, v.x, v.y) 
+		love.graphics.print(v.y, v.x, v.y + 10) 
     end
     -- let's draw our enemies 
     love.graphics.setColor(0,255,255,255) 
