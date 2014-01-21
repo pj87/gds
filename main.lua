@@ -72,13 +72,13 @@ function love.load()
 
     enemies = {}
 
-    for i=0,7 do
-        enemy = {}
-        enemy.width = 40
-        enemy.height = 20
-        enemy.x = i * (enemy.width + 60) + 100
-        enemy.y = enemy.height + 100
-        table.insert(enemies, enemy)
+    for i=0,7 do 
+        enemy = {} 
+        enemy.width = 40 
+        enemy.height = 20 
+        enemy.x = i * (enemy.width + 60) + 100 
+        enemy.y = enemy.height + 100 
+        table.insert(enemies, enemy) 
     end
 
 end
@@ -139,9 +139,11 @@ end
 		for i = 1, num_asteroids do 
 			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
 			if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50))  then
-				table.insert(remShot, i) 
-				shot.active = false 
-				objects.asteroids[i].size = objects.asteroids[i].size - 1 
+				--table.insert(remShot, i) 
+				--shot.active = false 
+				love.graphics.print("kolizja_x", shot.x + 10, shot.y) 
+				love.graphics.print("kolizja_y", shot.x + 10, shot.y + 10) 
+				--objects.asteroids[i].size = objects.asteroids[i].size - 1 
 			end 
 		end 
 	end 
@@ -276,13 +278,10 @@ end
 -- Checks if a and b overlap.
 -- w and h mean width and height.
 function CheckCollision(ax1,ay1,aw,ah, bx1,by1,bw,bh)
-
+ 
   --local ax2,ay2,bx2,by2 = ax1 + aw, ay1 + ah, bx1 + bw, by1 + bh
   --return ax1 > bx2 and ax2 > bx1 and ay1 > by2 and ay2 > by1
-  love.graphics.print("kolizja_x", ax1 + 10, ay1) 
-  love.graphics.print("kolizja_y", ax1 + 10, ay1 + 10) 
-  
-  if (ax1 + aw > bx1 and ax1 < bx1 + bw and ay1 + ah > bx1 and ay1 < by1 + bh) then 
+  if (ax1 + aw >= bx1 and ax1 <= bx1 + bw and ay1 + ah >= by1 and ay1 <= by1 + bh) then 
 	return true 
   end 
   return false 
