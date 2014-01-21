@@ -138,12 +138,14 @@ end
 	for index, shot in ipairs(hero.shots) do 
 		for i = 1, num_asteroids do 
 			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
-			if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50))  then
-				--table.insert(remShot, i) 
+			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
+			if (shot.active == true and (shot.x + 10) >= objects.asteroids[i].body:getX() and shot.x <= (objects.asteroids[i].body:getX() + 50) 
+			and shot.y + 10 >= objects.asteroids[i].body:getY() and shot.y <= objects.asteroids[i].body:getY() + 50) then 
+			--table.insert(remShot, i) 
 				--shot.active = false 
 				love.graphics.print("kolizja_x", shot.x + 10, shot.y) 
 				love.graphics.print("kolizja_y", shot.x + 10, shot.y + 10) 
-				--objects.asteroids[i].size = objects.asteroids[i].size - 1 
+				objects.asteroids[i].size = objects.asteroids[i].size - 1 
 			end 
 		end 
 	end 
@@ -284,7 +286,7 @@ function CheckCollision(ax1,ay1,aw,ah, bx1,by1,bw,bh)
   if (ax1 + aw >= bx1 and ax1 <= bx1 + bw and ay1 + ah >= by1 and ay1 <= by1 + bh) then 
 	return true 
   end 
-  return false 
+  --return false 
 end 
 
 
