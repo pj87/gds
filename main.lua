@@ -247,8 +247,8 @@ function love.draw()
     for i,v in ipairs(hero.shots) do 
         --love.graphics.rectangle("fill", v.x, v.y, 24, 29) 
 		love.graphics.draw(pocisk, v.x, v.y) 
-		love.graphics.print(v.x, v.x, v.y) 
-		love.graphics.print(v.y, v.x, v.y + 10) 
+		love.graphics.print(v.x, v.x + 10, v.y) 
+		love.graphics.print(v.y, v.x + 10, v.y + 10) 
     end
     -- let's draw our enemies 
     love.graphics.setColor(0,255,255,255) 
@@ -279,6 +279,9 @@ function CheckCollision(ax1,ay1,aw,ah, bx1,by1,bw,bh)
 
   --local ax2,ay2,bx2,by2 = ax1 + aw, ay1 + ah, bx1 + bw, by1 + bh
   --return ax1 > bx2 and ax2 > bx1 and ay1 > by2 and ay2 > by1
+  love.graphics.print("kolizja_x", ax1 + 10, ay1) 
+  love.graphics.print("kolizja_y", ax1 + 10, ay1 + 10) 
+  
   if (ax1 + aw > bx1 and ax1 < bx1 + bw and ay1 + ah > bx1 and ay1 < by1 + bh) then 
 	return true 
   end 
