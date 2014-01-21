@@ -141,10 +141,8 @@ end
 			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
 			if (shot.active == true and (shot.x + 10) >= objects.asteroids[i].body:getX() and shot.x <= (objects.asteroids[i].body:getX() + 50) 
 			and shot.y + 10 >= objects.asteroids[i].body:getY() and shot.y <= objects.asteroids[i].body:getY() + 50) then 
-			--table.insert(remShot, i) 
-				--shot.active = false 
-				love.graphics.print("kolizja_x", shot.x + 10, shot.y) 
-				love.graphics.print("kolizja_y", shot.x + 10, shot.y + 10) 
+				table.insert(remShot, index) 
+				shot.active = false 
 				objects.asteroids[i].size = objects.asteroids[i].size - 1 
 			end 
 		end 
@@ -250,9 +248,11 @@ function love.draw()
     love.graphics.setColor(255,255,255,255) 
     for i,v in ipairs(hero.shots) do 
         --love.graphics.rectangle("fill", v.x, v.y, 24, 29) 
-		love.graphics.draw(pocisk, v.x, v.y) 
-		love.graphics.print(v.x, v.x + 10, v.y) 
-		love.graphics.print(v.y, v.x + 10, v.y + 10) 
+		if (v.active == true) then 
+			love.graphics.draw(pocisk, v.x, v.y) 
+			love.graphics.print(v.x, v.x + 10, v.y) 
+			love.graphics.print(v.y, v.x + 10, v.y + 10) 
+		end 
     end
     -- let's draw our enemies 
     love.graphics.setColor(0,255,255,255) 
