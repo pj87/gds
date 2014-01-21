@@ -138,8 +138,9 @@ end
 	for index, shot in ipairs(hero.shots) do 
 		for i = 1, num_asteroids do 
 			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
-			if (CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50))  then
+			if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50))  then
 				table.insert(remShot, i) 
+				shot.active = false 
 				objects.asteroids[i].size = objects.asteroids[i].size - 1 
 			end 
 		end 
@@ -227,10 +228,8 @@ function love.draw()
 		--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 
 		if (objects.asteroids[i].size == 3) then 
 			love.graphics.draw(duza_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
-		end 
 		elseif (objects.asteroids[i].size == 2) then 
 			love.graphics.draw(srednia_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
-		end 
 		elseif (objects.asteroids[i].size == 1) then 
 			love.graphics.draw(mala_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
 		end 
@@ -262,6 +261,7 @@ function shoot()
     shot.y = objects.player.body:getY()
 	shot.dx = math.sin(angle) 
 	shot.dy = -math.cos(angle) 
+	shot.active = true 
 	
     table.insert(hero.shots, shot)
 
