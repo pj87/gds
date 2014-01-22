@@ -244,6 +244,10 @@ end
 	objects.enemy.x = objects.enemy.x + objects.enemy.speed * math.sin(objects.enemy.angle) * dt 
 	objects.enemy.y = objects.enemy.y + objects.enemy.speed * -math.cos(objects.enemy.angle) * dt 
 	
+	if(math.random(100) <= 1) then 
+		objects.enemy.angle = math.random(6.283) 
+	end 
+	
     -- remove the marked enemies
     for i,v in ipairs(remEnemy) do
         table.remove(enemies, v)
