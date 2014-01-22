@@ -236,17 +236,19 @@ function love.draw()
 	--love.graphics.draw(asteroida, objects.asteroid.body:getX(), objects.asteroid.body:getY()) 
 	
 	for i=1, num_asteroids do 
-		--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 
+		--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 		
+			--love.graphics.print(i, 0, i * 30) 			
 		if (objects.asteroids[i].magnitude == 3) then 
 			love.graphics.draw(duza_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
-			--love.graphics.print(i, 0, i * 30) 
-			love.graphics.print(objects.asteroids[i].body:getX(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 25) 
-			love.graphics.print(objects.asteroids[i].body:getY(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 35) 
 		elseif (objects.asteroids[i].magnitude == 2) then 
 			love.graphics.draw(srednia_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
 		elseif (objects.asteroids[i].magnitude == 1) then 
 			love.graphics.draw(mala_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
 		end 
+		
+		love.graphics.print(objects.asteroids[i].body:getX(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 25) 
+		love.graphics.print(objects.asteroids[i].body:getY(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 35) 
+		
 	end 
 	--for i,v in ipairs(objects.asteroid.body) do 
       --objects.asteroids[i] = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around 
