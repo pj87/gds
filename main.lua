@@ -1,6 +1,17 @@
 local angle = 0
 local num_asteroids = 10 
 
+function create_asteroid(x, y, magnitude, size, speed, angle) 
+	asteroid = {} 
+	--asteroid.body = love.physics.newBody(world, math.random(500), math.random(500), "dynamic") 
+	asteroid.body = love.physics.newBody(world, x, y, "dynamic") 
+	asteroid.magnitude = magnitude 
+	asteroid.size = size 
+	asteroid.speed = speed --50 + math.random(200) 
+	asteroid.angle = angle --math.random(6.283) 
+	return asteroid 
+end 
+	
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
@@ -39,13 +50,9 @@ function love.load()
 	
 	objects.asteroids = {} 
 	
-	for i = 1, num_asteroids do 
-		objects.asteroids[i] = {} 
-		objects.asteroids[i].body = love.physics.newBody(world, math.random(500), math.random(500), "dynamic")
-		objects.asteroids[i].magnitude = 3 
-		objects.asteroids[i].size = 60 
-		objects.asteroids[i].speed = 50 + math.random(200) 
-		objects.asteroids[i].angle = math.random(6.283) 
+	for i = 1, num_asteroids do  
+		asteroid = create_asteroid(math.random(500), math.random(500), 3, 60, 50, math.random(6.283)) 
+		table.insert(objects.asteroids, asteroid) 
     end 
 	
 	--for j = 1, 10 do 
@@ -137,21 +144,30 @@ end
 	
 	-- collisions 
 	for index, shot in ipairs(hero.shots) do 
-		for i = 1, num_asteroids do 
+		--for i = 1, num_asteroids do 
+		for i, asteroid in ipairs(objects.asteroids) do 
 			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
 			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
-			size_asteroid = objects.asteroids[i].size 
+			size_asteroid = asteroid.size 
 			size_shot = 10 
-			if (shot.active == true and shot.x + size_shot >= objects.asteroids[i].body:getX() and shot.x <= objects.asteroids[i].body:getX() + size_asteroid 
-			and shot.y + size_shot >= objects.asteroids[i].body:getY() and shot.y <= objects.asteroids[i].body:getY() + size_asteroid) then 
+			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
+			and shot.y + size_shot >= asteroid.body:getY() and shot.y <= asteroid.body:getY() + size_asteroid) then 
 				table.insert(remShot, index) 
+				--asteroid = create_asteroid() 
 				shot.active = false 
-				objects.asteroids[i].magnitude = objects.asteroids[i].magnitude - 1 
-				local magnitude = objects.asteroids[i].magnitude
+				asteroid.magnitude = asteroid.magnitude - 1 
+				local magnitude = asteroid.magnitude 
+				local pos_x = asteroid.body:getX() 
+				local pos_y = asteroid.body:getY() 
+				
 				if (magnitude == 2) then 
-					objects.asteroids[i].size = 40 
+					asteroid.size = 40 
+					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(6.283)) 
+					table.insert(objects.asteroids, asteroid_new) 
 				elseif (magnitude == 1) then 
-					objects.asteroids[i].size = 25 
+					asteroid.size = 25 
+					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(6.283)) 
+					table.insert(objects.asteroids, asteroid_new) 
 				end 
 			end 
 		end 
@@ -234,20 +250,20 @@ function love.draw()
 	love.graphics.pop() 
 	
 	--love.graphics.draw(asteroida, objects.asteroid.body:getX(), objects.asteroid.body:getY()) 
-	
-	for i=1, num_asteroids do 
+	for index, asteroid in ipairs(objects.asteroids) do 
+	--for i=1, num_asteroids do 
 		--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 		
 			--love.graphics.print(i, 0, i * 30) 			
-		if (objects.asteroids[i].magnitude == 3) then 
-			love.graphics.draw(duza_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
-		elseif (objects.asteroids[i].magnitude == 2) then 
-			love.graphics.draw(srednia_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
-		elseif (objects.asteroids[i].magnitude == 1) then 
-			love.graphics.draw(mala_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
+		if (asteroid.magnitude == 3) then 
+			love.graphics.draw(duza_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
+		elseif (asteroid.magnitude == 2) then 
+			love.graphics.draw(srednia_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
+		elseif (asteroid.magnitude == 1) then 
+			love.graphics.draw(mala_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
 		end 
 		
-		love.graphics.print(objects.asteroids[i].body:getX(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 25) 
-		love.graphics.print(objects.asteroids[i].body:getY(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 35) 
+		love.graphics.print(asteroid.body:getX(), asteroid.body:getX() + 25, asteroid.body:getY() + 25) 
+		love.graphics.print(asteroid.body:getY(), asteroid.body:getX() + 25, asteroid.body:getY() + 35) 
 		
 	end 
 	--for i,v in ipairs(objects.asteroid.body) do 
