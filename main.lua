@@ -42,7 +42,8 @@ function love.load()
 	for i = 1, num_asteroids do 
 		objects.asteroids[i] = {} 
 		objects.asteroids[i].body = love.physics.newBody(world, math.random(500), math.random(500), "dynamic")
-		objects.asteroids[i].size = 3 
+		objects.asteroids[i].magnitude = 3 
+		objects.asteroids[i].size = 60 
 		objects.asteroids[i].speed = 50 + math.random(200) 
 		objects.asteroids[i].angle = math.random(6.283) 
     end 
@@ -139,11 +140,19 @@ end
 		for i = 1, num_asteroids do 
 			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
 			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
-			if (shot.active == true and (shot.x + 10) >= objects.asteroids[i].body:getX() and shot.x <= (objects.asteroids[i].body:getX() + 50) 
-			and shot.y + 10 >= objects.asteroids[i].body:getY() and shot.y <= objects.asteroids[i].body:getY() + 50) then 
+			size_asteroid = objects.asteroids[i].size 
+			size_shot = 10 
+			if (shot.active == true and shot.x + size_shot >= objects.asteroids[i].body:getX() and shot.x <= objects.asteroids[i].body:getX() + size_asteroid 
+			and shot.y + size_shot >= objects.asteroids[i].body:getY() and shot.y <= objects.asteroids[i].body:getY() + size_asteroid) then 
 				table.insert(remShot, index) 
 				shot.active = false 
-				objects.asteroids[i].size = objects.asteroids[i].size - 1 
+				objects.asteroids[i].magnitude = objects.asteroids[i].magnitude - 1 
+				local magnitude = objects.asteroids[i].magnitude
+				if (magnitude == 2) then 
+					objects.asteroids[i].size = 40 
+				elseif (magnitude == 1) then 
+					objects.asteroids[i].size = 25 
+				end 
 			end 
 		end 
 	end 
@@ -228,14 +237,14 @@ function love.draw()
 	
 	for i=1, num_asteroids do 
 		--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 
-		if (objects.asteroids[i].size == 3) then 
+		if (objects.asteroids[i].magnitude == 3) then 
 			love.graphics.draw(duza_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
 			--love.graphics.print(i, 0, i * 30) 
 			love.graphics.print(objects.asteroids[i].body:getX(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 25) 
 			love.graphics.print(objects.asteroids[i].body:getY(), objects.asteroids[i].body:getX() + 25, objects.asteroids[i].body:getY() + 35) 
-		elseif (objects.asteroids[i].size == 2) then 
+		elseif (objects.asteroids[i].magnitude == 2) then 
 			love.graphics.draw(srednia_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
-		elseif (objects.asteroids[i].size == 1) then 
+		elseif (objects.asteroids[i].magnitude == 1) then 
 			love.graphics.draw(mala_asteroida, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY()) 
 		end 
 	end 
