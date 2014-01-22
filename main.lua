@@ -99,38 +99,55 @@ function love.keyreleased(key)
     end
 end
 
+function check_all_outside_screen() 
+	
+	for index, asteroid in ipairs(objects.asteroids) do 
+		if (asteroid.body:getX() < 0) then 
+			asteroid.body:setX(800) 
+		end 
+	
+		if (asteroid.body:getY() < 0) then 
+			asteroid.body:setY(600) 
+		end 
+	
+		if (asteroid.body:getX() > 800) then 
+			asteroid.body:setX(0) 
+		end 
+	
+		if (asteroid.body:getY() > 600) then 
+			asteroid.body:setY(0) 
+		end 
+	end 
+	
+	if (objects.player.body:getX() < 0) then 
+		objects.player.body:setX(800) 
+	end 
+	
+	if (objects.player.body:getY() < 0) then 
+		objects.player.body:setY(600) 
+	end 
+	
+	if (objects.player.body:getX() > 800) then 
+		objects.player.body:setX(0) 
+	end 
+	
+	if (objects.player.body:getY() > 600) then 
+		objects.player.body:setY(0) 
+	end 
+end 
+	
 function love.update(dt)
     world:update(dt)
 	
-	
-	--asteroid.body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
+	check_all_outside_screen() 
 	
     --here we are going to create some keyboard events
     if love.keyboard.isDown("right") then --press the right arrow key to push the player to the right
-       --objects.player.body:applyForce(400, 0) 
 	   angle = angle + dt * math.pi/2
-	   --love.graphics.rotate(angle)
     elseif love.keyboard.isDown("left") then --press the left arrow key to push the player to the left
-       --objects.player.body:applyForce(-400, 0)
 	   angle = angle - dt * math.pi/2
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the player in the air
        objects.player.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle))
-	--elseif love.keyboard.isDown("down") then --press the up arrow key to set the player in the air
-	   --objects.player.body:applyForce(math.rand(50) * math.sin(), 100) 
-	   --objects.asteroid.body:applyForce(100, 100) 
-	   --for i,v in ipairs(objects.asteroid.body) do 
-			--objects.asteroids[i] = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around 
-			--love.graphics.draw(asteroida, v:getX(), v:getY()) 
-			--v:applyForce(math.rand(50) * math.sin(v.angle), math.rand(50) * math.sin(v.angle))
-			--objects.asteroid[i].size
-		--end 
-		
-	--for i = 1, num_asteroids do 
-		--angle = objects.asteroids[i].angle 
-		--speed = objects.asteroids[i].speed 
-		--objects.asteroids[i].body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
-	--end 
-       --objects.player.body:applyForce(math.cos(angle), 400)
 end
 
 	if (asteroids_moving == false) then 
@@ -140,16 +157,9 @@ end
 		asteroids_moving = true 
 	end 
 	
-	angle = angle % (2*math.pi)
-	
-    -- keyboard actions for our hero
-    --if love.keyboard.isDown("left") then
-        --hero.x = hero.x - hero.speed*dt
-    --elseif love.keyboard.isDown("right") then
-        --hero.x = hero.x + hero.speed*dt
-    --end
+	angle = angle % (2*math.pi) 
 
-	local remEnemy = {}
+	local remEnemy = {} 
     local remShot = {} 
 	local remAsteroid = {} 
 	
@@ -164,7 +174,6 @@ end
 			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
 			and shot.y + size_shot >= asteroid.body:getY() and shot.y <= asteroid.body:getY() + size_asteroid) then 
 				table.insert(remShot, index) 
-				--asteroid = create_asteroid() 
 				shot.active = false 
 				asteroid.magnitude = asteroid.magnitude - 1 
 				local magnitude = asteroid.magnitude 
