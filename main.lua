@@ -140,7 +140,8 @@ end
     --end
 
 	local remEnemy = {}
-    local remShot = {}
+    local remShot = {} 
+	local remAsteroid = {} 
 	
 	-- collisions 
 	for index, shot in ipairs(hero.shots) do 
@@ -168,6 +169,8 @@ end
 					asteroid.size = 25 
 					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(6.283)) 
 					table.insert(objects.asteroids, asteroid_new) 
+				else 
+					table.insert(remAsteroid, i) 
 				end 
 			end 
 		end 
@@ -182,7 +185,7 @@ end
 
         -- mark shots that are not visible for removal
         if v.y < 0 then
-            table.insert(remShot, i)
+            table.insert(remShot, i) 
         end
 
         -- check for collision with enemies
@@ -208,6 +211,10 @@ end
         table.remove(hero.shots, v)
     end
 
+	for i,v in ipairs(remAsteroid) do
+        table.remove(objects.asteroids, v)
+    end
+	
     -- update those evil enemies
     for i,v in ipairs(enemies) do
         -- let them fall down slowly
