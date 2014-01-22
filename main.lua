@@ -48,6 +48,40 @@ function update_enemy_shots()
 	end 
 end 
 
+function divide_asteroids_after_collision(remAsteroid, remShot) 
+	-- collisions 
+	for index, shot in ipairs(hero.shots) do 
+		--for i = 1, num_asteroids do 
+		for i, asteroid in ipairs(objects.asteroids) do 
+			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
+			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
+			size_asteroid = asteroid.size 
+			size_shot = 10 
+			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
+			and shot.y + size_shot >= asteroid.body:getY() and shot.y <= asteroid.body:getY() + size_asteroid) then 
+				table.insert(remShot, index) 
+				shot.active = false 
+				asteroid.magnitude = asteroid.magnitude - 1 
+				local magnitude = asteroid.magnitude 
+				local pos_x = asteroid.body:getX() 
+				local pos_y = asteroid.body:getY() 
+
+				if (magnitude == 2) then 
+					asteroid.size = 40 
+					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(6.283)) 
+					table.insert(objects.asteroids, asteroid_new) 
+				elseif (magnitude == 1) then 
+					asteroid.size = 25 
+					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(6.283)) 
+					table.insert(objects.asteroids, asteroid_new) 
+				else 
+					table.insert(remAsteroid, i) 
+				end 		
+			end 
+		end 
+	end 
+end 
+
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
@@ -202,37 +236,7 @@ function love.update(dt)
     local remShot = {} 
 	local remAsteroid = {} 
 	
-	-- collisions 
-	for index, shot in ipairs(hero.shots) do 
-		--for i = 1, num_asteroids do 
-		for i, asteroid in ipairs(objects.asteroids) do 
-			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
-			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
-			size_asteroid = asteroid.size 
-			size_shot = 10 
-			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
-			and shot.y + size_shot >= asteroid.body:getY() and shot.y <= asteroid.body:getY() + size_asteroid) then 
-				table.insert(remShot, index) 
-				shot.active = false 
-				asteroid.magnitude = asteroid.magnitude - 1 
-				local magnitude = asteroid.magnitude 
-				local pos_x = asteroid.body:getX() 
-				local pos_y = asteroid.body:getY() 
-				
-				if (magnitude == 2) then 
-					asteroid.size = 40 
-					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(6.283)) 
-					table.insert(objects.asteroids, asteroid_new) 
-				elseif (magnitude == 1) then 
-					asteroid.size = 25 
-					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(6.283)) 
-					table.insert(objects.asteroids, asteroid_new) 
-				else 
-					table.insert(remAsteroid, i) 
-				end 
-			end 
-		end 
-	end 
+	divide_asteroids_after_collision(remAsteroid, remShot) 
 
     -- update the shots
     for i,v in ipairs(hero.shots) do
