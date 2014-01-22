@@ -9,6 +9,7 @@ function create_asteroid(x, y, magnitude, size, speed, angle)
 	asteroid.size = size 
 	asteroid.speed = speed --50 + math.random(200) 
 	asteroid.angle = angle --math.random(6.283) 
+	asteroid.body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
 	return asteroid 
 end 
 	
@@ -233,18 +234,6 @@ function love.draw()
     -- let's draw a background
     love.graphics.setColor(255,255,255,255)
     love.graphics.draw(bg)
-
-    -- let's draw some ground
-    love.graphics.setColor(0,255,0,255)
-    love.graphics.rectangle("fill", 0, 465, 800, 150)
-
-    --love.graphics.setColor(193, 47, 14) --set the drawing color to red for the player
-    --love.graphics.circle("fill", objects.player.body:getX(), objects.player.body:getY(), objects.player.shape:getRadius())
-
-    -- let's draw our hero
-	--love.graphics.rotate(angle)
-    love.graphics.setColor(255,255,0,255)
-    love.graphics.rectangle("fill", hero.x, hero.y, hero.width, hero.height)
 
 	love.graphics.push() 
 	--width = 48 
