@@ -48,7 +48,7 @@ function update_enemy_shots()
 	end 
 end 
 
-function divide_asteroids_after_collision(remAsteroid, remShot) 
+function divide_asteroids_after_collision_with_player_shots(remAsteroid, remShot) 
 	-- collisions 
 	for index, shot in ipairs(hero.shots) do 
 		--for i = 1, num_asteroids do 
@@ -81,6 +81,41 @@ function divide_asteroids_after_collision(remAsteroid, remShot)
 		end 
 	end 
 end 
+
+function divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remShot) 
+	-- collisions 
+	for index, shot in ipairs(objects.enemy.shots) do 
+		--for i = 1, num_asteroids do 
+		for i, asteroid in ipairs(objects.asteroids) do 
+			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
+			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
+			size_asteroid = asteroid.size 
+			size_shot = 10 
+			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
+			and shot.y + size_shot >= asteroid.body:getY() and shot.y <= asteroid.body:getY() + size_asteroid) then 
+				table.insert(remShot, index) 
+				shot.active = false 
+				asteroid.magnitude = asteroid.magnitude - 1 
+				local magnitude = asteroid.magnitude 
+				local pos_x = asteroid.body:getX() 
+				local pos_y = asteroid.body:getY() 
+
+				if (magnitude == 2) then 
+					asteroid.size = 40 
+					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(6.283)) 
+					table.insert(objects.asteroids, asteroid_new) 
+				elseif (magnitude == 1) then 
+					asteroid.size = 25 
+					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(6.283)) 
+					table.insert(objects.asteroids, asteroid_new) 
+				else 
+					table.insert(remAsteroid, i) 
+				end 		
+			end 
+		end 
+	end 
+end 
+
 
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
@@ -233,11 +268,13 @@ function love.update(dt)
 	angle = angle % (2*math.pi) 
 
 	local remEnemy = {} 
-    local remShot = {} 
+    local remPlayerShot = {} 
+	local remEnemyShot = {} 
 	local remAsteroid = {} 
 	
-	divide_asteroids_after_collision(remAsteroid, remShot) 
-
+	divide_asteroids_after_collision_with_player_shots(remAsteroid, remPlayerShot) 
+	divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remEnemyShot) 
+	
     -- update the shots
     for i,v in ipairs(hero.shots) do
 
@@ -246,9 +283,9 @@ function love.update(dt)
 		v.y = v.y + v.dy * dt * 100 
 
         -- mark shots that are not visible for removal
-        if v.y < 0 then
-            table.insert(remShot, i) 
-        end
+        if v.y < 0 then 
+            table.insert(remPlayerShot, i) 
+        end 
 
         -- check for collision with enemies
         --for ii,vv in ipairs(enemies) do
@@ -264,6 +301,8 @@ function love.update(dt)
 
     end
 
+	
+	
 	objects.enemy.x = objects.enemy.x + objects.enemy.speed * math.sin(objects.enemy.angle) * dt 
 	objects.enemy.y = objects.enemy.y + objects.enemy.speed * -math.cos(objects.enemy.angle) * dt 
 	
@@ -279,10 +318,14 @@ function love.update(dt)
         table.remove(enemies, v)
     end
 
-    for i,v in ipairs(remShot) do
-        table.remove(hero.shots, v)
-    end
+    for i,v in ipairs(remPlayerShot) do 
+        table.remove(hero.shots, v) 
+    end 
 
+	for i,v in ipairs(remEnemyShot) do 
+        table.remove(hero.shots, v) 
+    end 
+	
 	for i,v in ipairs(remAsteroid) do
         table.remove(objects.asteroids, v)
     end
