@@ -13,7 +13,20 @@ function create_asteroid(x, y, magnitude, size, speed, angle)
 	asteroid.body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
 	return asteroid 
 end 
-	
+
+function create_enemy(x, y, magnitude, size_x, size_y, speed, angle) 
+	enemy = {} 
+	enemy.shots = {} 
+	enemy.body = love.physics.newBody(world, x, y, "dynamic") 
+	enemy.magnitude = magnitude 
+	enemy.size_x = size_x 
+	enemy.size_y = size_y 
+	enemy.speed = speed --50 + math.random(200) 
+	enemy.angle = angle --math.random(6.283) 
+	enemy.body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
+	return enemy 
+end 
+
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
@@ -56,6 +69,10 @@ function love.load()
 		asteroid = create_asteroid(math.random(500), math.random(500), 3, 60, 50, math.random(6.283)) 
 		table.insert(objects.asteroids, asteroid) 
     end 
+	
+	objects.enemies = {} 
+	enemy = create_enemy((math.random(500), math.random(500), 1, 45, 18, math.random(6.283)) 
+	table.insert(object.enemies, enemy) 
 	
 	--for j = 1, 10 do 
 	--	objects.asteroids[j].size = 2 
@@ -294,7 +311,7 @@ function love.draw()
 			love.graphics.print(v.x, v.x + 10, v.y) 
 			love.graphics.print(v.y, v.x + 10, v.y + 10) 
 		end 
-    end
+    end 
     -- let's draw our enemies 
     love.graphics.setColor(0,255,255,255) 
     for i,v in ipairs(enemies) do 
