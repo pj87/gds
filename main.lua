@@ -17,13 +17,15 @@ end
 function create_enemy(x, y, magnitude, size_x, size_y, speed, angle) 
 	enemy = {} 
 	enemy.shots = {} 
-	enemy.body = love.physics.newBody(world, x, y, "dynamic") 
+	--enemy.body = love.physics.newBody(world, x, y, "dynamic") 
+	enemy.x = x 
+	enemy.y = y 
 	enemy.magnitude = magnitude 
 	enemy.size_x = size_x 
 	enemy.size_y = size_y 
 	enemy.speed = speed --50 + math.random(200) 
 	enemy.angle = angle --math.random(6.283) 
-	enemy.body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
+	--enemy.body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
 	return enemy 
 end 
 
@@ -70,9 +72,9 @@ function love.load()
 		table.insert(objects.asteroids, asteroid) 
     end 
 	
-	objects.enemies = {} 
-	enemy = create_enemy((math.random(500), math.random(500), 1, 45, 18, math.random(6.283)) 
-	table.insert(object.enemies, enemy) 
+	objects.enemy = {} 
+	objects.enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
+	--table.insert(objects.enemy, enemy) 
 	
 	--for j = 1, 10 do 
 	--	objects.asteroids[j].size = 2 
@@ -88,6 +90,7 @@ function love.load()
 	duza_asteroida = love.graphics.newImage("duza_asteroida.png") 
 	srednia_asteroida = love.graphics.newImage("srednia_asteroida.png") 
 	mala_asteroida = love.graphics.newImage("mala_asteroida.png") 
+	enemy_img = love.graphics.newImage("enemy.png") 
 	
     hero = {} -- new table for the hero 
     hero.x = 300    -- x,y coordinates of the hero 
@@ -238,6 +241,9 @@ end
 
     end
 
+	objects.enemy.x = objects.enemy.x + objects.enemy.speed * math.sin(objects.enemy.angle) * dt 
+	objects.enemy.y = objects.enemy.y + objects.enemy.speed * -math.cos(objects.enemy.angle) * dt 
+	
     -- remove the marked enemies
     for i,v in ipairs(remEnemy) do
         table.remove(enemies, v)
@@ -295,8 +301,10 @@ function love.draw()
 		
 		love.graphics.print(asteroid.body:getX(), asteroid.body:getX() + 25, asteroid.body:getY() + 25) 
 		love.graphics.print(asteroid.body:getY(), asteroid.body:getX() + 25, asteroid.body:getY() + 35) 
-		
 	end 
+	
+	love.graphics.draw(enemy_img, objects.enemy.x, objects.enemy.y) 
+	
 	--for i,v in ipairs(objects.asteroid.body) do 
       --objects.asteroids[i] = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around 
 	  --love.graphics.draw(duza_asteroida, v:getX(), v:getY()) 
@@ -321,18 +329,16 @@ function love.draw()
 	love.graphics.print(angle, 100, 100); 
 end
 
-function shoot()
-
-    local shot = {}
-    shot.x = objects.player.body:getX()+hero.width/2
-    shot.y = objects.player.body:getY()
+function shoot() 
+    local shot = {} 
+    shot.x = objects.player.body:getX()+hero.width/2 
+    shot.y = objects.player.body:getY() 
 	shot.dx = math.sin(angle) 
 	shot.dy = -math.cos(angle) 
 	shot.active = true 
 	
-    table.insert(hero.shots, shot)
-
-end
+    table.insert(hero.shots, shot) 
+end 
 
 -- Collision detection function.
 -- Checks if a and b overlap.
