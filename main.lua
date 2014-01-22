@@ -29,6 +29,25 @@ function create_enemy(x, y, magnitude, size_x, size_y, speed, angle)
 	return enemy 
 end 
 
+function enemy_shoot() 
+	if (math.random(100) <= 1) then 
+		shot = {} 
+		shot.x = objects.enemy.x 
+		shot.y = objects.enemy.y 
+		shot.active = true 
+		shot.speed = math.random(2.5) 
+		shot.angle = math.random(6.283) 
+		table.insert(objects.enemy.shots, shot) 
+	end 
+end 
+
+function update_enemy_shots() 
+	for index, shot in ipairs(objects.enemy.shots) do 
+		shot.x = shot.x + shot.speed * math.sin(shot.angle) 
+		shot.y = shot.y + shot.speed * -math.cos(shot.angle) 
+	end 
+end 
+
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
@@ -168,7 +187,7 @@ function love.update(dt)
 	   angle = angle - dt * math.pi/2
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the player in the air
        objects.player.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle))
-end
+	end
 
 	if (asteroids_moving == false) then 
 		for index, asteroid in ipairs(objects.asteroids) do 
@@ -244,9 +263,12 @@ end
 	objects.enemy.x = objects.enemy.x + objects.enemy.speed * math.sin(objects.enemy.angle) * dt 
 	objects.enemy.y = objects.enemy.y + objects.enemy.speed * -math.cos(objects.enemy.angle) * dt 
 	
-	if(math.random(100) <= 1) then 
+	if(math.random(1000) <= 1) then 
 		objects.enemy.angle = math.random(6.283) 
 	end 
+	
+	enemy_shoot() 
+	update_enemy_shots() 
 	
     -- remove the marked enemies
     for i,v in ipairs(remEnemy) do
@@ -324,6 +346,16 @@ function love.draw()
 			love.graphics.print(v.y, v.x + 10, v.y + 10) 
 		end 
     end 
+	
+	for i,v in ipairs(objects.enemy.shots) do 
+        --love.graphics.rectangle("fill", v.x, v.y, 24, 29) 
+		if (v.active == true) then 
+			love.graphics.draw(pocisk, v.x, v.y) 
+			love.graphics.print(v.x, v.x + 10, v.y) 
+			love.graphics.print(v.y, v.x + 10, v.y + 10) 
+		end 
+    end 
+	
     -- let's draw our enemies 
     love.graphics.setColor(0,255,255,255) 
     for i,v in ipairs(enemies) do 
