@@ -1,5 +1,6 @@
-local angle = 0
+local angle = 0 
 local num_asteroids = 10 
+local asteroids_moving = false 
 
 function create_asteroid(x, y, magnitude, size, speed, angle) 
 	asteroid = {} 
@@ -20,8 +21,8 @@ function love.load()
     objects = {} -- table to hold all our physical objects 
 
     --let's create a player
-    objects.player = {}
-    objects.player.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around
+    objects.player = {} 
+    objects.player.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around 
 	--objects.player.shape = love.physics.newCircleShape(20) --the player's shape has a radius of 20
     --objects.player.fixture = love.physics.newFixture(objects.player.body, objects.player.shape, 1) -- Attach fixture to body and give it a density of 1.
     --objects.player.fixture:setRestitution(0.9) --let the player bounce
@@ -101,6 +102,9 @@ end
 function love.update(dt)
     world:update(dt)
 	
+	
+	--asteroid.body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
+	
     --here we are going to create some keyboard events
     if love.keyboard.isDown("right") then --press the right arrow key to push the player to the right
        --objects.player.body:applyForce(400, 0) 
@@ -111,7 +115,7 @@ function love.update(dt)
 	   angle = angle - dt * math.pi/2
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the player in the air
        objects.player.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle))
-	elseif love.keyboard.isDown("down") then --press the up arrow key to set the player in the air
+	--elseif love.keyboard.isDown("down") then --press the up arrow key to set the player in the air
 	   --objects.player.body:applyForce(math.rand(50) * math.sin(), 100) 
 	   --objects.asteroid.body:applyForce(100, 100) 
 	   --for i,v in ipairs(objects.asteroid.body) do 
@@ -121,15 +125,20 @@ function love.update(dt)
 			--objects.asteroid[i].size
 		--end 
 		
-	for i = 1, num_asteroids do 
-		angle = objects.asteroids[i].angle 
-		speed = objects.asteroids[i].speed 
-		objects.asteroids[i].body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
-	end 
+	--for i = 1, num_asteroids do 
+		--angle = objects.asteroids[i].angle 
+		--speed = objects.asteroids[i].speed 
+		--objects.asteroids[i].body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
+	--end 
        --objects.player.body:applyForce(math.cos(angle), 400)
 end
 
-	--objects.asteroid.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle))
+	if (asteroids_moving == false) then 
+		for index, asteroid in ipairs(objects.asteroids) do 
+			asteroid.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle))
+		end 
+		asteroids_moving = true 
+	end 
 	
 	angle = angle % (2*math.pi)
 	
