@@ -126,7 +126,7 @@ function check_collision_between_enemy_shots_and_player(remShot)
 		--for i = 1, num_asteroids do 
 		for i, asteroid in ipairs(objects.asteroids) do 
 			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y) 
-			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
+			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then 
 			size_asteroid = asteroid.size 
 			size_shot = 10 
 			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
@@ -141,8 +141,8 @@ function check_collision_between_enemy_shots_and_player(remShot)
 				if (magnitude == 2) then 
 					asteroid.size = 40 
 					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
-					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle))
-					--asteroid_new:body:applyForce
+					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
+					--asteroid_new:body:applyForce 
 					--table.insert(objects.asteroids, asteroid_new) 
 					
 				elseif (magnitude == 1) then 
@@ -158,6 +158,35 @@ function check_collision_between_enemy_shots_and_player(remShot)
 	end 
 end 
 
+function check_collisions_between_asteroids_and_player(remAsteroid) 
+	for index, asteroid in ipairs(objects.asteroids) do 
+	
+		size_asteroid = asteroid.size 
+		size_player_x = 50 
+		size_player_y = 55 
+		
+		if (objects.player.body:getX() + size_player_x >= asteroid.body:getX() and objects.player.body:getX() <= asteroid.body:getX() + size_asteroid 
+			and objects.player.body:getY() + size_player_y >= asteroid.body:getY() and objects.player.body:getY() <= asteroid.body:getY() + size_asteroid) then 
+			
+			--love.graphics.print("Game Over", objects.player.body:getX() + 25, objects.player.body:getY() + 25) 
+			objects.player.alive = false 		
+		--for i=1, num_asteroids do 
+			--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 
+				--love.graphics.print(i, 0, i * 30) 
+			--if (asteroid.magnitude == 3) then 
+				--love.graphics.draw(duza_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
+			--elseif (asteroid.magnitude == 2) then 
+				--love.graphics.draw(srednia_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
+			--elseif (asteroid.magnitude == 1) then 
+				--love.graphics.draw(mala_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
+			--end 
+		
+			--love.graphics.print(asteroid.body:getX(), asteroid.body:getX() + 25, asteroid.body:getY() + 25) 
+			--love.graphics.print(asteroid.body:getY(), asteroid.body:getX() + 25, asteroid.body:getY() + 35) 
+		end 
+	end 
+end 
+
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
@@ -166,7 +195,9 @@ function love.load()
 
     --let's create a player
     objects.player = {} 
+	--objects.player.size = 
     objects.player.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around 
+	objects.player.alive = true 
 	--objects.player.shape = love.physics.newCircleShape(20) --the player's shape has a radius of 20
     --objects.player.fixture = love.physics.newFixture(objects.player.body, objects.player.shape, 1) -- Attach fixture to body and give it a density of 1.
     --objects.player.fixture:setRestitution(0.9) --let the player bounce
@@ -296,7 +327,7 @@ function love.update(dt)
     elseif love.keyboard.isDown("left") then --press the left arrow key to push the player to the left
 	   angle = angle - dt * math.pi/2
     elseif love.keyboard.isDown("up") then --press the up arrow key to set the player in the air
-       objects.player.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle))
+       objects.player.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle)) 
 	end
 
 	if (asteroids_moving == false) then 
@@ -316,14 +347,15 @@ function love.update(dt)
 	divide_asteroids_after_collision_with_player_shots(remAsteroid, remPlayerShot) 
 	divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remEnemyShot) 
 	
+	check_collisions_between_asteroids_and_player(remAsteroid) 
     -- update the shots
-    for i,v in ipairs(hero.shots) do
+    for i,v in ipairs(hero.shots) do 
 
         -- move them up up up
         v.x = v.x + v.dx * dt * 100 
 		v.y = v.y + v.dy * dt * 100 
 
-        -- mark shots that are not visible for removal
+        -- mark shots that are not visible for removal 
         if v.y < 0 then 
             table.insert(remPlayerShot, i) 
         end 
@@ -445,17 +477,17 @@ function love.draw()
     end 
 	
     -- let's draw our enemies 
-    love.graphics.setColor(0,255,255,255) 
-    for i,v in ipairs(enemies) do 
-        love.graphics.rectangle("fill", v.x, v.y, v.width, v.height) 
-    end 
+    --love.graphics.setColor(0,255,255,255) 
+    --for i,v in ipairs(enemies) do 
+        --love.graphics.rectangle("fill", v.x, v.y, v.width, v.height) 
+    --end 
 	
 	love.graphics.print(angle, 100, 100); 
 end
 
 function shoot() 
     local shot = {} 
-    shot.x = objects.player.body:getX()+hero.width/2 
+    shot.x = objects.player.body:getX()--+hero.width/2 
     shot.y = objects.player.body:getY() 
 	shot.dx = math.sin(angle) 
 	shot.dy = -math.cos(angle) 
