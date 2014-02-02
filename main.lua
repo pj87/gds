@@ -149,14 +149,32 @@ function check_collisions_between_asteroids_and_player(remAsteroid)
 	for index, asteroid in ipairs(objects.asteroids) do 
 	
 		size_asteroid = asteroid.size 
-		size_player_x = 50 
-		size_player_y = 55 
+		size_player_x = 30 --50 
+		size_player_y = 25 --55 
 		
-		if (objects.player.body:getX() + size_player_x >= asteroid.body:getX() and objects.player.body:getX() <= asteroid.body:getX() + size_asteroid 
+		if (objects.player.alive == true and objects.player.body:getX() + size_player_x >= asteroid.body:getX() and objects.player.body:getX() <= asteroid.body:getX() + size_asteroid 
 			and objects.player.body:getY() + size_player_y >= asteroid.body:getY() and objects.player.body:getY() <= asteroid.body:getY() + size_asteroid) then 
 			
 			--love.graphics.print("Game Over", objects.player.body:getX() + 25, objects.player.body:getY() + 25) 
-			objects.player.alive = false 		
+			objects.player.alive = false 	
+			asteroid.magnitude = asteroid.magnitude - 1 
+			local magnitude = asteroid.magnitude 
+			local pos_x = asteroid.body:getX() 
+			local pos_y = asteroid.body:getY() 
+
+			if (magnitude == 2) then 
+				asteroid.size = 40 
+				asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
+				asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
+				table.insert(objects.asteroids, asteroid_new) 
+			elseif (magnitude == 1) then 
+				asteroid.size = 25 
+				asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(math.pi *2)) 
+				asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
+				table.insert(objects.asteroids, asteroid_new) 
+			else 
+				table.insert(remAsteroid, i) 
+			end 
 		--for i=1, num_asteroids do 
 			--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 
 				--love.graphics.print(i, 0, i * 30) 
@@ -373,9 +391,11 @@ function love.draw()
     love.graphics.setColor(255,255,255,255)
     love.graphics.draw(bg)
 
-	love.graphics.push() 
-	love.graphics.draw(statek, objects.player.body:getX(), objects.player.body:getY(), angle, 1, 1, 25, 25) 
-	love.graphics.pop() 
+	if(objects.player.alive == true) then 
+		love.graphics.push() 
+		love.graphics.draw(statek, objects.player.body:getX(), objects.player.body:getY(), angle, 1, 1, 25, 25) 
+		love.graphics.pop() 
+	end 
 	
 	for index, asteroid in ipairs(objects.asteroids) do 	
 		if (asteroid.magnitude == 3) then 
