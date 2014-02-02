@@ -175,19 +175,6 @@ function check_collisions_between_asteroids_and_player(remAsteroid)
 			else 
 				table.insert(remAsteroid, i) 
 			end 
-		--for i=1, num_asteroids do 
-			--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 
-				--love.graphics.print(i, 0, i * 30) 
-			--if (asteroid.magnitude == 3) then 
-				--love.graphics.draw(duza_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
-			--elseif (asteroid.magnitude == 2) then 
-				--love.graphics.draw(srednia_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
-			--elseif (asteroid.magnitude == 1) then 
-				--love.graphics.draw(mala_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
-			--end 
-		
-			--love.graphics.print(asteroid.body:getX(), asteroid.body:getX() + 25, asteroid.body:getY() + 25) 
-			--love.graphics.print(asteroid.body:getY(), asteroid.body:getX() + 25, asteroid.body:getY() + 35) 
 		end 
 	end 
 end 
@@ -386,6 +373,12 @@ function love.update(dt)
 
 end
 
+function show_game_over_screen()
+	if (objects.player.alive == false) then 
+		love.graphics.print("Game Over", 650 / 2, 650 / 2) 
+	end 
+end 
+
 function love.draw()
     -- let's draw a background
     love.graphics.setColor(255,255,255,255)
@@ -431,6 +424,8 @@ function love.draw()
     end 
 	
 	love.graphics.print(angle, 100, 100); 
+	
+	show_game_over_screen() 
 end
 
 function shoot() 
