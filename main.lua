@@ -179,6 +179,40 @@ function check_collisions_between_asteroids_and_player(remAsteroid)
 	end 
 end 
 
+function check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
+	for index, asteroid in ipairs(objects.asteroids) do 
+	
+		size_asteroid = asteroid.size 
+		size_enemy_x = 45 --50 
+		size_enemy_y = 18 --55 
+		
+		if (objects.player.alive == true and objects.enemy.x + size_enemy_x >= asteroid.body:getX() and objects.enemy.x <= asteroid.body:getX() + size_asteroid 
+			and objects.enemy.y + size_enemy_y >= asteroid.body:getY() and objects.enemy.y <= asteroid.body:getY() + size_asteroid) then 
+			
+			--love.graphics.print("Game Over", objects.player.body:getX() + 25, objects.player.body:getY() + 25) 
+			objects.enemy.alive = false 
+			asteroid.magnitude = asteroid.magnitude - 1 
+			local magnitude = asteroid.magnitude 
+			local pos_x = asteroid.body:getX() 
+			local pos_y = asteroid.body:getY() 
+
+			if (magnitude == 2) then 
+				asteroid.size = 40 
+				asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
+				asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
+				table.insert(objects.asteroids, asteroid_new) 
+			elseif (magnitude == 1) then 
+				asteroid.size = 25 
+				asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(math.pi *2)) 
+				asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
+				table.insert(objects.asteroids, asteroid_new) 
+			else 
+				table.insert(remAsteroid, i) 
+			end 
+		end 
+	end 
+end 
+
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
@@ -304,6 +338,8 @@ function love.update(dt)
 	divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remEnemyShot) 
 	
 	check_collisions_between_asteroids_and_player(remAsteroid) 
+	check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
+	
     -- update the shots
     for i,v in ipairs(hero.shots) do 
 
@@ -390,7 +426,7 @@ function love.draw()
 		love.graphics.pop() 
 	end 
 	
-	for index, asteroid in ipairs(objects.asteroids) do 	
+	for index, asteroid in ipairs(objects.asteroids) do 
 		if (asteroid.magnitude == 3) then 
 			love.graphics.draw(duza_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
 		elseif (asteroid.magnitude == 2) then 
@@ -403,7 +439,9 @@ function love.draw()
 		love.graphics.print(asteroid.body:getY(), asteroid.body:getX() + 25, asteroid.body:getY() + 35) 
 	end 
 	
-	love.graphics.draw(enemy_img, objects.enemy.x, objects.enemy.y) 
+	if(objects.enemy.alive == true) then 
+		love.graphics.draw(enemy_img, objects.enemy.x, objects.enemy.y) 
+	end 
 	
     -- let's draw our heros shots 
     love.graphics.setColor(255,255,255,255) 
