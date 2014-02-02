@@ -4,28 +4,24 @@ local asteroids_moving = false
 
 function create_asteroid(x, y, magnitude, size, speed, angle) 
 	asteroid = {} 
-	--asteroid.body = love.physics.newBody(world, math.random(500), math.random(500), "dynamic") 
 	asteroid.body = love.physics.newBody(world, x, y, "dynamic") 
 	asteroid.magnitude = magnitude 
 	asteroid.size = size 
-	asteroid.speed = speed --50 + math.random(200) 
-	asteroid.angle = angle --math.random(6.283) 
-	--asteroid.body:applyForce(speed * math.cos(angle), -speed * math.sin(angle)) 
+	asteroid.speed = speed 
+	asteroid.angle = angle 
 	return asteroid 
 end 
 
 function create_enemy(x, y, magnitude, size_x, size_y, speed, angle) 
 	enemy = {} 
 	enemy.shots = {} 
-	--enemy.body = love.physics.newBody(world, x, y, "dynamic") 
 	enemy.x = x 
 	enemy.y = y 
 	enemy.magnitude = magnitude 
 	enemy.size_x = size_x 
 	enemy.size_y = size_y 
-	enemy.speed = speed --50 + math.random(200) 
-	enemy.angle = angle --math.random(6.283) 
-	--enemy.body:applyForce(speed * math.cos(angle), speed * math.sin(angle)) 
+	enemy.speed = speed 
+	enemy.angle = angle 
 	return enemy 
 end 
 
@@ -51,10 +47,7 @@ end
 function divide_asteroids_after_collision_with_player_shots(remAsteroid, remShot) 
 	-- collisions 
 	for index, shot in ipairs(hero.shots) do 
-		--for i = 1, num_asteroids do 
 		for i, asteroid in ipairs(objects.asteroids) do 
-			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
-			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
 			size_asteroid = asteroid.size 
 			size_shot = 10 
 			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
@@ -87,10 +80,7 @@ end
 function divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remShot) 
 	-- collisions 
 	for index, shot in ipairs(objects.enemy.shots) do 
-		--for i = 1, num_asteroids do 
 		for i, asteroid in ipairs(objects.asteroids) do 
-			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y)
-			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then
 			size_asteroid = asteroid.size 
 			size_shot = 10 
 			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
@@ -123,7 +113,6 @@ end
 function check_collision_between_enemy_shots_and_player(remShot) 
 	-- collisions 
 	for index, shot in ipairs(objects.enemy.shots) do 
-		--for i = 1, num_asteroids do 
 		for i, asteroid in ipairs(objects.asteroids) do 
 			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y) 
 			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then 
@@ -142,8 +131,6 @@ function check_collision_between_enemy_shots_and_player(remShot)
 					asteroid.size = 40 
 					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
 					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
-					--asteroid_new:body:applyForce 
-					--table.insert(objects.asteroids, asteroid_new) 
 					
 				elseif (magnitude == 1) then 
 					asteroid.size = 25 
@@ -195,35 +182,8 @@ function love.load()
 
     --let's create a player
     objects.player = {} 
-	--objects.player.size = 
     objects.player.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around 
 	objects.player.alive = true 
-	--objects.player.shape = love.physics.newCircleShape(20) --the player's shape has a radius of 20
-    --objects.player.fixture = love.physics.newFixture(objects.player.body, objects.player.shape, 1) -- Attach fixture to body and give it a density of 1.
-    --objects.player.fixture:setRestitution(0.9) --let the player bounce
-	
-	--objects.enemies = {}
-    --objects.enemy1.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") 
-	
-	--family = {}
-    --family[1]={}
-    --family[1].mother="Angie"
-    --family[1].father="Michael"
-    --family[1].children={}
-    --family[1].children[1]="Jessica"
-    --family[1].children[2]="Thomas"
-	
-	--objects.asteroid = {} 
-	--objects.asteroid.body = {}
-	--objects.asteroid.size = {} -- There are three sizes of asteroids (big, medim, small) 
-	
-	--objects.asteroid.body = love.physics.newBody(world, 400, 400, "dynamic") 
-	--objects.asteroid.body:applyForce(100, 100) 
-	--b = love.physics.newBody(world, math.random(600), math.random(600), "dynamic") 
-	--b:applyForce(100, 100) 
-	--objects.asteroid.body = b 
-	
-	--table.insert(objects.asteroid.bodies, love.physics.newBody(world, math.random(200), math.random(200)))
 	
 	objects.asteroids = {} 
 	
@@ -234,15 +194,6 @@ function love.load()
 	
 	objects.enemy = {} 
 	objects.enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
-	--table.insert(objects.enemy, enemy) 
-	
-	--for j = 1, 10 do 
-	--	objects.asteroids[j].size = 2 
-    --end 
-	
-    --for i=1, 10 do 
-    --  objects.asteroids[i].body = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around
-    --end 
 
     bg = love.graphics.newImage("bg.png") 
 	statek = love.graphics.newImage("statek.png") 
@@ -423,20 +374,10 @@ function love.draw()
     love.graphics.draw(bg)
 
 	love.graphics.push() 
-	--width = 48 
-    --height = 57 
-    --love.graphics.translate(width/2, height/2) 
-    --love.graphics.translate(-75, -75)
-	--love.graphics.rotate(angle) 
-    --love.graphics.translate(hero.x, hero.y) 
 	love.graphics.draw(statek, objects.player.body:getX(), objects.player.body:getY(), angle, 1, 1, 25, 25) 
 	love.graphics.pop() 
 	
-	--love.graphics.draw(asteroida, objects.asteroid.body:getX(), objects.asteroid.body:getY()) 
-	for index, asteroid in ipairs(objects.asteroids) do 
-	--for i=1, num_asteroids do 
-		--love.graphics.print(objects.asteroids[i].body:getX(), 100, 150); 		
-			--love.graphics.print(i, 0, i * 30) 			
+	for index, asteroid in ipairs(objects.asteroids) do 	
 		if (asteroid.magnitude == 3) then 
 			love.graphics.draw(duza_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
 		elseif (asteroid.magnitude == 2) then 
@@ -451,15 +392,9 @@ function love.draw()
 	
 	love.graphics.draw(enemy_img, objects.enemy.x, objects.enemy.y) 
 	
-	--for i,v in ipairs(objects.asteroid.body) do 
-      --objects.asteroids[i] = love.physics.newBody(world, math.random(200), math.random(200)) --place the body in the center of the world and make it dynamic, so it can move around 
-	  --love.graphics.draw(duza_asteroida, v:getX(), v:getY()) 
-    --end 
-	
     -- let's draw our heros shots 
     love.graphics.setColor(255,255,255,255) 
     for i,v in ipairs(hero.shots) do 
-        --love.graphics.rectangle("fill", v.x, v.y, 24, 29) 
 		if (v.active == true) then 
 			love.graphics.draw(pocisk, v.x, v.y) 
 			love.graphics.print(v.x, v.x + 10, v.y) 
@@ -468,19 +403,12 @@ function love.draw()
     end 
 	
 	for i,v in ipairs(objects.enemy.shots) do 
-        --love.graphics.rectangle("fill", v.x, v.y, 24, 29) 
 		if (v.active == true) then 
 			love.graphics.draw(pocisk, v.x, v.y) 
 			love.graphics.print(v.x, v.x + 10, v.y) 
 			love.graphics.print(v.y, v.x + 10, v.y + 10) 
 		end 
     end 
-	
-    -- let's draw our enemies 
-    --love.graphics.setColor(0,255,255,255) 
-    --for i,v in ipairs(enemies) do 
-        --love.graphics.rectangle("fill", v.x, v.y, v.width, v.height) 
-    --end 
 	
 	love.graphics.print(angle, 100, 100); 
 end
