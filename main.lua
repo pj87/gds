@@ -397,7 +397,26 @@ function check_all_outside_screen()
 		objects.player.body:setY(0) 
 	end 
 end 
+
+function remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
+	-- remove the marked enemies 
+    for i,v in ipairs(remEnemy) do 
+        table.remove(enemies, v) 
+    end 
+
+    for i,v in ipairs(remPlayerShot) do 
+        table.remove(objects.player.shots, v)  
+    end 
+
+	for i,v in ipairs(remEnemyShot) do 
+        table.remove(objects.enemy.shots, v) 
+    end 
 	
+	for i,v in ipairs(remAsteroid) do 
+        table.remove(objects.asteroids, v) 
+    end 
+end 
+
 function love.update(dt)
     world:update(dt)
 	
@@ -474,34 +493,19 @@ function love.update(dt)
 	enemy_shoot() 
 	update_enemy_shots() 
 	
-    -- remove the marked enemies
-    for i,v in ipairs(remEnemy) do
-        table.remove(enemies, v)
-    end
-
-    for i,v in ipairs(remPlayerShot) do 
-        table.remove(objects.player.shots, v) 
-    end 
-
-	for i,v in ipairs(remEnemyShot) do 
-        table.remove(objects.player.shots, v) 
-    end 
-	
-	for i,v in ipairs(remAsteroid) do
-        table.remove(objects.asteroids, v)
-    end
+	remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
 	
     -- update those evil enemies
-    for i,v in ipairs(enemies) do
+    --for i,v in ipairs(enemies) do
         -- let them fall down slowly
-        v.y = v.y + dt
+    --    v.y = v.y + dt
 
         -- check for collision with ground
-        if v.y > 465 then
+    --    if v.y > 465 then
             -- you lose!!!
-        end
+    --    end
 
-    end
+    --end
 
 end
 
