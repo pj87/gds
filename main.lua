@@ -46,7 +46,7 @@ end
 
 function divide_asteroids_after_collision_with_player_shots(remAsteroid, remShot) 
 	-- collisions 
-	for index, shot in ipairs(hero.shots) do 
+	for index, shot in ipairs(objects.player.shots) do 
 		for i, asteroid in ipairs(objects.asteroids) do 
 			size_asteroid = asteroid.size 
 			size_shot = 10 
@@ -232,7 +232,7 @@ end
 
 function check_collision_between_player_shots_and_enemy(remShot) -- to implement 
 	-- collisions 
-		for index, shot in ipairs(hero.shots) do 
+		for index, shot in ipairs(objects.player.shots) do 
 			
 			size_enemy_x = 45 
 			size_enemy_y = 18 
@@ -261,7 +261,51 @@ function check_collision_between_player_and_enemy()
 	end 
 end 
 
-function love.load()
+-- draws both enemie's and playter's shots 
+function draw_shots() 
+	-- let's draw our heros shots 
+    love.graphics.setColor(255,255,255,255) 
+    for i,v in ipairs(objects.player.shots) do 
+		if (v.active == true) then 
+			love.graphics.draw(pocisk, v.x, v.y) 
+			love.graphics.print(v.x, v.x + 10, v.y) 
+			love.graphics.print(v.y, v.x + 10, v.y + 10) 
+		end 
+    end 
+	
+	for i,v in ipairs(objects.enemy.shots) do 
+		if (v.active == true) then 
+			love.graphics.draw(pocisk, v.x, v.y) 
+			love.graphics.print(v.x, v.x + 10, v.y) 
+			love.graphics.print(v.y, v.x + 10, v.y + 10) 
+		end 
+    end 
+end 
+
+function draw_asteroids() 
+	for index, asteroid in ipairs(objects.asteroids) do 
+		if (asteroid.magnitude == 3) then 
+			love.graphics.draw(duza_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
+		elseif (asteroid.magnitude == 2) then 
+			love.graphics.draw(srednia_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
+		elseif (asteroid.magnitude == 1) then 
+			love.graphics.draw(mala_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
+		end 
+		
+		love.graphics.print(asteroid.body:getX(), asteroid.body:getX() + 25, asteroid.body:getY() + 25) 
+		love.graphics.print(asteroid.body:getY(), asteroid.body:getX() + 25, asteroid.body:getY() + 35) 
+	end 
+end
+
+function draw_player() 
+	if(objects.player.alive == true) then 
+		love.graphics.push() 
+		love.graphics.draw(statek, objects.player.body:getX(), objects.player.body:getY(), angle, 1, 1, 25, 25) 
+		love.graphics.pop() 
+	end 
+end 
+
+function love.load() 
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
 
@@ -296,7 +340,7 @@ function love.load()
     hero.width = 30 
     hero.height = 15 
     hero.speed = 150 
-    hero.shots = {} -- holds our fired shots 
+    objects.player.shots = {} -- holds our fired shots 
 
     enemies = {}
 
@@ -393,7 +437,7 @@ function love.update(dt)
 	check_collision_between_player_and_enemy() 
 	
     -- update the shots
-    for i,v in ipairs(hero.shots) do 
+    for i,v in ipairs(objects.player.shots) do 
 
         -- move them up up up
         v.x = v.x + v.dx * dt * 100 
@@ -436,11 +480,11 @@ function love.update(dt)
     end
 
     for i,v in ipairs(remPlayerShot) do 
-        table.remove(hero.shots, v) 
+        table.remove(objects.player.shots, v) 
     end 
 
 	for i,v in ipairs(remEnemyShot) do 
-        table.remove(hero.shots, v) 
+        table.remove(objects.player.shots, v) 
     end 
 	
 	for i,v in ipairs(remAsteroid) do
@@ -471,47 +515,15 @@ function love.draw()
     -- let's draw a background
     love.graphics.setColor(255,255,255,255)
     love.graphics.draw(bg)
-
-	if(objects.player.alive == true) then 
-		love.graphics.push() 
-		love.graphics.draw(statek, objects.player.body:getX(), objects.player.body:getY(), angle, 1, 1, 25, 25) 
-		love.graphics.pop() 
-	end 
 	
-	for index, asteroid in ipairs(objects.asteroids) do 
-		if (asteroid.magnitude == 3) then 
-			love.graphics.draw(duza_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
-		elseif (asteroid.magnitude == 2) then 
-			love.graphics.draw(srednia_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
-		elseif (asteroid.magnitude == 1) then 
-			love.graphics.draw(mala_asteroida, asteroid.body:getX(), asteroid.body:getY()) 
-		end 
-		
-		love.graphics.print(asteroid.body:getX(), asteroid.body:getX() + 25, asteroid.body:getY() + 25) 
-		love.graphics.print(asteroid.body:getY(), asteroid.body:getX() + 25, asteroid.body:getY() + 35) 
-	end 
+	draw_player() 
+	
+	draw_asteroids() 
+	draw_shots() 
 	
 	if(objects.enemy.alive == true) then 
 		love.graphics.draw(enemy_img, objects.enemy.x, objects.enemy.y) 
 	end 
-	
-    -- let's draw our heros shots 
-    love.graphics.setColor(255,255,255,255) 
-    for i,v in ipairs(hero.shots) do 
-		if (v.active == true) then 
-			love.graphics.draw(pocisk, v.x, v.y) 
-			love.graphics.print(v.x, v.x + 10, v.y) 
-			love.graphics.print(v.y, v.x + 10, v.y + 10) 
-		end 
-    end 
-	
-	for i,v in ipairs(objects.enemy.shots) do 
-		if (v.active == true) then 
-			love.graphics.draw(pocisk, v.x, v.y) 
-			love.graphics.print(v.x, v.x + 10, v.y) 
-			love.graphics.print(v.y, v.x + 10, v.y + 10) 
-		end 
-    end 
 	
 	love.graphics.print(angle, 100, 100); 
 	
@@ -526,7 +538,7 @@ function shoot()
 	shot.dy = -math.cos(angle) 
 	shot.active = true 
 	
-    table.insert(hero.shots, shot) 
+    table.insert(objects.player.shots, shot) 
 end 
 
 -- Collision detection function.
