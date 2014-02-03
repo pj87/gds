@@ -213,6 +213,23 @@ function check_collisions_between_asteroids_and_enemy_ship(remAsteroid)
 	end 
 end 
 
+function check_collision_between_enemy_shots_and_player(remShot) 
+	-- collisions 
+		for index, shot in ipairs(objects.enemy.shots) do 
+			
+			size_player_x = 30 
+			size_player_x = 25 
+			
+			size_shot = 10 
+			if (shot.active == true and shot.x + size_shot >= objects.player.body:getX() and shot.x <= objects.player.body:getX() + size_player_x 
+				and shot.y + size_shot >= objects.player.body:getY() and shot.y <= objects.player.body:getY() + size_player_y) then 
+				table.insert(remShot, index) 
+				shot.active = false 
+				objects.player.alive = false 
+			end 
+		end 
+end 
+
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
@@ -340,6 +357,7 @@ function love.update(dt)
 	check_collisions_between_asteroids_and_player(remAsteroid) 
 	check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
 	
+	check_collision_between_enemy_shots_and_player(remEnemyShot) 
     -- update the shots
     for i,v in ipairs(hero.shots) do 
 
