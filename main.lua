@@ -230,6 +230,37 @@ function check_collision_between_enemy_shots_and_player(remShot)
 		end 
 end 
 
+function check_collision_between_player_shots_and_enemy(remShot) -- to implement 
+	-- collisions 
+		for index, shot in ipairs(hero.shots) do 
+			
+			size_enemy_x = 45 
+			size_enemy_y = 18 
+			
+			size_shot = 10 
+			if (shot.active == true and shot.x + size_shot >= objects.enemy.x and shot.x <= objects.enemy.x + size_enemy_x 
+				and shot.y + size_shot >= objects.enemy.y and shot.y <= objects.enemy.y + size_enemy_y) then 
+				table.insert(remShot, index) 
+				shot.active = false 
+				objects.player.alive = false 
+			end 
+		end 
+end 
+
+function check_collision_between_player_and_enemy() 
+	
+	size_enemy_x = 45 
+	size_enemy_y = 18 
+	
+	size_player_x = 30 
+	size_player_y = 25 
+	
+	if (objects.player.alive == true and objects.player.body:getX() + size_player_x >= objects.enemy.x and objects.player.body:getX() <= objects.enemy.x + size_enemy_x 
+		and objects.player.body:getY() + size_player_y >= objects.enemy.y and objects.player.body:getY() <= objects.enemy.y + size_enemy_y) then 
+			objects.player.alive = false 				
+	end 
+end 
+
 function love.load()
     love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
@@ -339,7 +370,7 @@ function love.update(dt)
 
 	if (asteroids_moving == false) then 
 		for index, asteroid in ipairs(objects.asteroids) do 
-			asteroid.body:applyForce(asteroid.speed * math.sin(asteroid.angle), -asteroid.speed * math.cos(asteroid.angle))
+			asteroid.body:applyForce(asteroid.speed * math.sin(asteroid.angle), -asteroid.speed * math.cos(asteroid.angle)) 
 		end 
 		asteroids_moving = true 
 	end 
@@ -358,6 +389,9 @@ function love.update(dt)
 	check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
 	
 	check_collision_between_enemy_shots_and_player(remEnemyShot) 
+	check_collision_between_player_shots_and_enemy(remPlayerShot) 
+	check_collision_between_player_and_enemy() 
+	
     -- update the shots
     for i,v in ipairs(hero.shots) do 
 
