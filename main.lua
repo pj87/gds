@@ -145,18 +145,24 @@ function check_collision_between_enemy_shots_and_player(remShot)
 	end 
 end 
 
+function kill_and_respawn_player() 
+	objects.player.alive = false 
+	objects.player.lives = objects.player.lives - 1 
+end 
+
 function check_collisions_between_asteroids_and_player(remAsteroid) 
 	for index, asteroid in ipairs(objects.asteroids) do 
 	
 		size_asteroid = asteroid.size 
-		size_player_x = 30 --50 
-		size_player_y = 25 --55 
+		size_player_x = objects.player.size.x 
+		size_player_y = objects.player.size.y 
 		
 		if (objects.player.alive == true and objects.player.body:getX() + size_player_x >= asteroid.body:getX() and objects.player.body:getX() <= asteroid.body:getX() + size_asteroid 
 			and objects.player.body:getY() + size_player_y >= asteroid.body:getY() and objects.player.body:getY() <= asteroid.body:getY() + size_asteroid) then 
 			
+			kill_and_respawn_player() 
 			--love.graphics.print("Game Over", objects.player.body:getX() + 25, objects.player.body:getY() + 25) 
-			objects.player.alive = false 	
+			
 			asteroid.magnitude = asteroid.magnitude - 1 
 			local magnitude = asteroid.magnitude 
 			local pos_x = asteroid.body:getX() 
@@ -217,8 +223,8 @@ function check_collision_between_enemy_shots_and_player(remShot)
 	-- collisions 
 		for index, shot in ipairs(objects.enemy.shots) do 
 			
-			size_player_x = 30 
-			size_player_x = 25 
+			size_player_x = objects.player.size.x 
+			size_player_x = objects.player.size.y 
 			
 			size_shot = 10 
 			if (shot.active == true and shot.x + size_shot >= objects.player.body:getX() and shot.x <= objects.player.body:getX() + size_player_x 
@@ -234,8 +240,8 @@ function check_collision_between_player_shots_and_enemy(remShot) -- to implement
 	-- collisions 
 		for index, shot in ipairs(objects.player.shots) do 
 			
-			size_enemy_x = 45 
-			size_enemy_y = 18 
+			size_enemy_x = objects.enemy.size.x  
+			size_enemy_y = objects.enemy.size.y 
 			
 			size_shot = 10 
 			if (shot.active == true and shot.x + size_shot >= objects.enemy.x and shot.x <= objects.enemy.x + size_enemy_x 
@@ -249,15 +255,15 @@ end
 
 function check_collision_between_player_and_enemy() 
 	
-	size_enemy_x = 45 
-	size_enemy_y = 18 
+	size_enemy_x = objects.enemy.size.x 
+	size_enemy_y = objects.enemy.size.y 
 	
-	size_player_x = 30 
-	size_player_y = 25 
+	size_player_x = objects.player.size.x 
+	size_player_y = objects.player.size.y 
 	
 	if (objects.player.alive == true and objects.player.body:getX() + size_player_x >= objects.enemy.x and objects.player.body:getX() <= objects.enemy.x + size_enemy_x 
 		and objects.player.body:getY() + size_player_y >= objects.enemy.y and objects.player.body:getY() <= objects.enemy.y + size_enemy_y) then 
-			objects.player.alive = false 				
+			objects.player.alive = false 			
 	end 
 end 
 
@@ -304,62 +310,6 @@ function draw_player()
 		love.graphics.pop() 
 	end 
 end 
-
-function love.load() 
-    love.physics.setMeter(64) --the height of a meter our worlds will be 64px
-    world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
-
-    objects = {} -- table to hold all our physical objects 
-
-    --let's create a player
-    objects.player = {} 
-    objects.player.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around 
-	objects.player.alive = true 
-	
-	objects.asteroids = {} 
-	
-	for i = 1, num_asteroids do  
-		asteroid = create_asteroid(math.random(500), math.random(500), 3, 60, 50, math.random(6.283)) 
-		table.insert(objects.asteroids, asteroid) 
-    end 
-	
-	objects.enemy = {} 
-	objects.enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
-
-    bg = love.graphics.newImage("bg.png") 
-	statek = love.graphics.newImage("statek.png") 
-	pocisk = love.graphics.newImage("pocisk.png") 
-	duza_asteroida = love.graphics.newImage("duza_asteroida.png") 
-	srednia_asteroida = love.graphics.newImage("srednia_asteroida.png") 
-	mala_asteroida = love.graphics.newImage("mala_asteroida.png") 
-	enemy_img = love.graphics.newImage("enemy.png") 
-	
-    hero = {} -- new table for the hero 
-    hero.x = 300    -- x,y coordinates of the hero 
-    hero.y = 450 
-    hero.width = 30 
-    hero.height = 15 
-    hero.speed = 150 
-    objects.player.shots = {} -- holds our fired shots 
-
-    enemies = {}
-
-    for i=0,7 do 
-        enemy = {} 
-        enemy.width = 40 
-        enemy.height = 20 
-        enemy.x = i * (enemy.width + 60) + 100 
-        enemy.y = enemy.height + 100 
-        table.insert(enemies, enemy) 
-    end
-
-end
-
-function love.keyreleased(key)
-    if (key == " ") then
-        shoot()
-    end
-end
 
 function check_all_outside_screen() 
 	
@@ -417,33 +367,161 @@ function remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid)
     end 
 end 
 
-function love.update(dt)
-    world:update(dt)
-	
-	check_all_outside_screen() 
-	
-    --here we are going to create some keyboard events
-    if love.keyboard.isDown("right") then --press the right arrow key to push the player to the right
-	   angle = angle + dt * math.pi/2
-    elseif love.keyboard.isDown("left") then --press the left arrow key to push the player to the left
-	   angle = angle - dt * math.pi/2
-    elseif love.keyboard.isDown("up") then --press the up arrow key to set the player in the air
-       objects.player.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle)) 
-	end
+function move_players_shots(dt, remPlayerShot) 
+	-- update the shots
+    for i,v in ipairs(objects.player.shots) do 
 
+        -- move them up up up
+        v.x = v.x + v.dx * dt * 100 
+		v.y = v.y + v.dy * dt * 100 
+
+        -- mark shots that are not visible for removal 
+        if v.y < 0 then 
+            table.insert(remPlayerShot, i) 
+        end 
+    end
+end 
+
+function move_enemy(dt) 
+	objects.enemy.x = objects.enemy.x + objects.enemy.speed * math.sin(objects.enemy.angle) * dt 
+	objects.enemy.y = objects.enemy.y + objects.enemy.speed * -math.cos(objects.enemy.angle) * dt 
+	
+	if(math.random(1000) <= 1) then 
+		objects.enemy.angle = math.random(math.pi * 2) 
+	end 
+end 
+
+function shoot() 
+    local shot = {} 
+    shot.x = objects.player.body:getX()--+hero.width/2 
+    shot.y = objects.player.body:getY() 
+	shot.dx = math.sin(angle) 
+	shot.dy = -math.cos(angle) 
+	shot.active = true 
+	
+    table.insert(objects.player.shots, shot) 
+end 
+
+function draw_enemy() 
+	if(objects.enemy.alive == true) then 
+		love.graphics.draw(enemy_img, objects.enemy.x, objects.enemy.y) 
+	end 
+end 
+
+function draw_hud() 
+	love.graphics.print("Lives: ", 20, 20) 
+	love.graphics.print(objects.player.lives, 70, 20) 
+	
+	love.graphics.print("Points: ", 20, 30) 
+	love.graphics.print(objects.player.points, 70, 30) 
+end 
+
+function show_game_over_screen()
+	if (objects.player.alive == false) then 
+		love.graphics.print("Game Over", 650 / 2, 650 / 2) 
+	end 
+end 
+
+function control_player(dt) 
+	--here we are going to create some keyboard events 
+    if love.keyboard.isDown("right") then --press the right arrow key to push the player to the right 
+	   angle = angle + dt * math.pi/2 
+    elseif love.keyboard.isDown("left") then --press the left arrow key to push the player to the left 
+	   angle = angle - dt * math.pi/2 
+    elseif love.keyboard.isDown("up") then --press the up arrow key to set the player in the air 
+       objects.player.body:applyForce(50 * math.sin(angle), -50 * math.cos(angle)) 
+	end 
+	
+	angle = angle % (2*math.pi) 
+end 
+
+function love.keyreleased(key) 
+    if (key == " ") then 
+        shoot() 
+    end 
+end 
+
+function start_asteroid_movement() 
 	if (asteroids_moving == false) then 
 		for index, asteroid in ipairs(objects.asteroids) do 
 			asteroid.body:applyForce(asteroid.speed * math.sin(asteroid.angle), -asteroid.speed * math.cos(asteroid.angle)) 
 		end 
 		asteroids_moving = true 
 	end 
-	
-	angle = angle % (2*math.pi) 
+end 
 
+function love.load() 
+    love.physics.setMeter(64) --the height of a meter our worlds will be 64px
+    world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
+
+    objects = {} -- table to hold all our physical objects 
+
+    --let's create a player 
+    objects.player = {} 
+    objects.player.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around 
+	objects.player.alive = true 
+	objects.player.size = {} 
+	objects.player.size.x = 30 
+	objects.player.size.y = 25 
+	objects.player.shots = {} 
+	objects.player.lives = 3 
+	objects.player.points = 0 
+	
+	objects.asteroids = {} 
+	
+	for i = 1, num_asteroids do 
+		asteroid = create_asteroid(math.random(500), math.random(500), 3, 60, 50, math.random(6.283)) 
+		table.insert(objects.asteroids, asteroid) 
+    end 
+	
+	objects.enemy = {} 
+	objects.enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
+	objects.enemy.size = {} 
+	objects.enemy.size.x = 45 
+	objects.enemy.size.y = 18 
+	objects.enemy.speed = 20
+	objects.enemy.angle = 0 
+	
+    bg = love.graphics.newImage("bg.png") 
+	statek = love.graphics.newImage("statek.png") 
+	pocisk = love.graphics.newImage("pocisk.png") 
+	duza_asteroida = love.graphics.newImage("duza_asteroida.png") 
+	srednia_asteroida = love.graphics.newImage("srednia_asteroida.png") 
+	mala_asteroida = love.graphics.newImage("mala_asteroida.png") 
+	enemy_img = love.graphics.newImage("enemy.png") 
+	
+    hero = {} -- new table for the hero 
+    hero.x = 300    -- x,y coordinates of the hero 
+    hero.y = 450 
+    hero.width = 30 
+    hero.height = 15 
+    hero.speed = 150 
+
+    enemies = {}
+
+    for i=0,7 do 
+        enemy = {} 
+        enemy.width = 40 
+        enemy.height = 20 
+        enemy.x = i * (enemy.width + 60) + 100 
+        enemy.y = enemy.height + 100 
+        table.insert(enemies, enemy) 
+    end
+
+end
+
+function love.update(dt)
+    world:update(dt)
+	
 	local remEnemy = {} 
     local remPlayerShot = {} 
 	local remEnemyShot = {} 
 	local remAsteroid = {} 
+	
+	check_all_outside_screen() 
+	control_player(dt) 
+	
+	start_asteroid_movement() 
 	
 	divide_asteroids_after_collision_with_player_shots(remAsteroid, remPlayerShot) 
 	divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remEnemyShot) 
@@ -455,94 +533,29 @@ function love.update(dt)
 	check_collision_between_player_shots_and_enemy(remPlayerShot) 
 	check_collision_between_player_and_enemy() 
 	
-    -- update the shots
-    for i,v in ipairs(objects.player.shots) do 
-
-        -- move them up up up
-        v.x = v.x + v.dx * dt * 100 
-		v.y = v.y + v.dy * dt * 100 
-
-        -- mark shots that are not visible for removal 
-        if v.y < 0 then 
-            table.insert(remPlayerShot, i) 
-        end 
-
-        -- check for collision with enemies
-        --for ii,vv in ipairs(enemies) do
-            --if CheckCollision(v.x,v.y,2,5,vv.x,vv.y,vv.width,vv.height) then
-
-                -- mark that enemy for removal
-                --table.insert(remEnemy, ii)
-                -- mark the shot to be removed
-                --table.insert(remShot, i)
-
-            --end
-        --end
-
-    end
-
-	
-	
-	objects.enemy.x = objects.enemy.x + objects.enemy.speed * math.sin(objects.enemy.angle) * dt 
-	objects.enemy.y = objects.enemy.y + objects.enemy.speed * -math.cos(objects.enemy.angle) * dt 
-	
-	if(math.random(1000) <= 1) then 
-		objects.enemy.angle = math.random(math.pi * 2) 
-	end 
+	move_players_shots(dt, remPlayerShot) 
+	move_enemy(dt) 
 	
 	enemy_shoot() 
 	update_enemy_shots() 
-	
 	remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
-	
-    -- update those evil enemies
-    --for i,v in ipairs(enemies) do
-        -- let them fall down slowly
-    --    v.y = v.y + dt
-
-        -- check for collision with ground
-    --    if v.y > 465 then
-            -- you lose!!!
-    --    end
-
-    --end
-
 end
 
-function show_game_over_screen()
-	if (objects.player.alive == false) then 
-		love.graphics.print("Game Over", 650 / 2, 650 / 2) 
-	end 
-end 
-
-function love.draw()
-    -- let's draw a background
-    love.graphics.setColor(255,255,255,255)
-    love.graphics.draw(bg)
+function love.draw() 
+    -- let's draw a background 
+    love.graphics.setColor(255,255,255,255) 
+    love.graphics.draw(bg) 
 	
 	draw_player() 
-	
 	draw_asteroids() 
 	draw_shots() 
+	draw_enemy() 
 	
-	if(objects.enemy.alive == true) then 
-		love.graphics.draw(enemy_img, objects.enemy.x, objects.enemy.y) 
-	end 
+	love.graphics.print(angle, 100, 100) 
 	
-	love.graphics.print(angle, 100, 100); 
+	draw_hud() 
 	
 	show_game_over_screen() 
-end
-
-function shoot() 
-    local shot = {} 
-    shot.x = objects.player.body:getX()--+hero.width/2 
-    shot.y = objects.player.body:getY() 
-	shot.dx = math.sin(angle) 
-	shot.dy = -math.cos(angle) 
-	shot.active = true 
-	
-    table.insert(objects.player.shots, shot) 
 end 
 
 -- Collision detection function.
