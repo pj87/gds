@@ -1,8 +1,9 @@
 local angle = 0 
-local num_asteroids = 10 
+local num_asteroids = 5 
 local asteroids_moving = false 
 local num_enemies = 5  
 local game_state = 0 -- 0 - main menu, 1 - credits, 2 - game, 3 - game over 
+local game_started = false 
 
 function create_asteroid(x, y, magnitude, size, speed, angle) 
 	asteroid = {} 
@@ -60,6 +61,9 @@ function update_main_menu_screen()
 				love.event.quit() 
 		end 
 	end 
+	
+	game_started = false 
+	
 end 
 
 function update_credits_screen() 
@@ -110,12 +114,12 @@ function divide_asteroids_after_collision_with_player_shots(remAsteroid, remShot
 
 				if (magnitude == 2) then 
 					asteroid.size = 40 
-					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, math.random(50) + 500, math.random(math.pi * 2)) 
+					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, math.random(500) + 500, math.random(math.pi * 2)) 
 					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle))
 					table.insert(objects.asteroids, asteroid_new) 
 				elseif (magnitude == 1) then 
 					asteroid.size = 25 
-					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, math.random(50) + 500, math.random(math.pi * 2)) 
+					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, math.random(500) + 500, math.random(math.pi * 2)) 
 					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle))
 					table.insert(objects.asteroids, asteroid_new) 
 				else 
@@ -143,12 +147,12 @@ function divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remShot)
 
 				if (magnitude == 2) then 
 					asteroid.size = 40 
-					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, math.random(50) + 500, math.random(6.283)) 
+					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, math.random(500) + 500, math.random(6.283)) 
 					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle))
 					table.insert(objects.asteroids, asteroid_new) 
 				elseif (magnitude == 1) then 
 					asteroid.size = 25 
-					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, math.random(50) + 500, math.random(6.283)) 
+					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, math.random(500) + 500, math.random(6.283)) 
 					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle))
 					table.insert(objects.asteroids, asteroid_new) 
 				else 
@@ -208,12 +212,12 @@ function check_collisions_between_asteroids_and_player(remAsteroid)
 			
 			if (magnitude == 2) then 
 				asteroid.size = 40 
-				asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
+				asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, math.random(500) + 500, math.random(math.pi * 2)) 
 				asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
 				table.insert(objects.asteroids, asteroid_new) 
 			elseif (magnitude == 1) then 
 				asteroid.size = 25 
-				asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(math.pi *2)) 
+				asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, math.random(500) + 500, math.random(math.pi *2)) 
 				asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
 				table.insert(objects.asteroids, asteroid_new) 
 			else 
@@ -223,7 +227,7 @@ function check_collisions_between_asteroids_and_player(remAsteroid)
 	end 
 end 
 
-function check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
+function check_collisions_between_asteroids_and_enemy_ship(remAsteroid, remEnemy) 
 	for index, asteroid in ipairs(objects.asteroids) do 
 		for i, enemy in ipairs(objects.enemies) do 
 			size_asteroid = asteroid.size 
@@ -233,7 +237,8 @@ function check_collisions_between_asteroids_and_enemy_ship(remAsteroid)
 			if (enemy.alive == true and enemy.x + size_enemy_x >= asteroid.body:getX() and enemy.x <= asteroid.body:getX() + size_asteroid 
 				and enemy.y + size_enemy_y >= asteroid.body:getY() and enemy.y <= asteroid.body:getY() + size_asteroid) then 
 			
-				objects.enemy.alive = false 
+				--objects.enemy.alive = false 
+				table.insert(remEnemy, i) 
 				asteroid.magnitude = asteroid.magnitude - 1 
 				local magnitude = asteroid.magnitude 
 				local pos_x = asteroid.body:getX() 
@@ -241,12 +246,12 @@ function check_collisions_between_asteroids_and_enemy_ship(remAsteroid)
 
 				if (magnitude == 2) then 
 					asteroid.size = 40 
-					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
+					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, math.random(500) + 500, math.random(math.pi * 2)) 
 					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
 					table.insert(objects.asteroids, asteroid_new) 
 				elseif (magnitude == 1) then 
 					asteroid.size = 25 
-					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(math.pi *2)) 
+					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, math.random(500) + 500, math.random(math.pi *2)) 
 					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
 					table.insert(objects.asteroids, asteroid_new) 
 				else 
@@ -485,6 +490,19 @@ function draw_hud()
 	
 	love.graphics.print("Points: ", 20, 30) 
 	love.graphics.print(objects.player.score, 70, 30) 
+	
+	love.graphics.print(angle, 100, 100) 
+	love.graphics.print(num_enemies, 100, 130) 
+	
+	local y = 0 
+	
+	for index, enemy in ipairs(objects.enemies) do 
+		love.graphics.print(enemy.x, 100, 150 + y) 
+		love.graphics.print(enemy.y, 100, 170 + y) 
+		
+		y = y + 20 
+	end 
+	
 end 
 
 function show_game_over_screen()
@@ -523,8 +541,8 @@ function start_asteroid_movement()
 	end 
 end 
 
-function love.load() 
-    love.physics.setMeter(64) --the height of a meter our worlds will be 64px
+function reset_game_to_defaults() 
+	love.physics.setMeter(64) --the height of a meter our worlds will be 64px
     world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
 
     objects = {} -- table to hold all our physical objects 
@@ -545,7 +563,8 @@ function love.load()
 	objects.asteroids = {} 
 	
 	for i = 1, num_asteroids do 
-		asteroid = create_asteroid(math.random(500), math.random(500), 3, 60, 50, math.random(6.283)) 
+		asteroid = create_asteroid(math.random(500), math.random(500), 3, 60, math.random(500) + 500, math.random(6.283)) 
+		asteroid.body:applyForce(asteroid.speed * math.sin(asteroid.angle), -asteroid.speed * math.cos(asteroid.angle)) 
 		table.insert(objects.asteroids, asteroid) 
     end 
 	
@@ -557,7 +576,9 @@ function love.load()
 		enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
 		table.insert(objects.enemies, enemy) 
 	end 
-	
+end 
+
+function love.load() 
     bg = love.graphics.newImage("bg.png") 
 	statek = love.graphics.newImage("statek.png") 
 	pocisk = love.graphics.newImage("pocisk.png") 
@@ -569,6 +590,11 @@ function love.load()
 end
 
 function love.update(dt)
+	
+	if (game_started == false) then 
+		reset_game_to_defaults() 
+		game_started = true 
+	end 
 	
 	if (game_state == 2 and objects.player.lives == -1) then 
 		game_state = 3 
@@ -600,7 +626,7 @@ function love.update(dt)
 		divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remEnemyShot) 
 	
 		check_collisions_between_asteroids_and_player(remAsteroid) 
-		check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
+		check_collisions_between_asteroids_and_enemy_ship(remAsteroid, remEnemy) 
 	
 		check_collision_between_enemy_shots_and_player(remEnemyShot) 
 		check_collision_between_player_shots_and_enemies(remPlayerShot, remEnemy) 
@@ -636,8 +662,6 @@ function love.draw()
 		draw_asteroids() 
 		draw_shots() 
 		draw_enemies() 
-	
-		love.graphics.print(angle, 100, 100) 
 	
 		draw_hud() 
 	else 
