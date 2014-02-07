@@ -2,6 +2,7 @@ local angle = 0
 local num_asteroids = 10 
 local asteroids_moving = false 
 local num_enemies = 5  
+local game_state = 0 -- 0 - main menu, 2 - credits, 3 - game 
 
 function create_asteroid(x, y, magnitude, size, speed, angle) 
 	asteroid = {} 
@@ -507,52 +508,58 @@ function love.load()
 end
 
 function love.update(dt)
-    world:update(dt)
+    
+	if (game_state == 3) then 
+		world:update(dt)
 	
-	local remEnemy = {} 
-    local remPlayerShot = {} 
-	local remEnemyShot = {} 
-	local remAsteroid = {} 
+		local remEnemy = {} 
+		local remPlayerShot = {} 
+		local remEnemyShot = {} 
+		local remAsteroid = {} 
 	
-	check_all_outside_screen() 
-	control_player(dt) 
+		check_all_outside_screen() 
+		control_player(dt) 
 	
-	start_asteroid_movement() 
+		start_asteroid_movement() 
 	
-	divide_asteroids_after_collision_with_player_shots(remAsteroid, remPlayerShot) 
-	divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remEnemyShot) 
+		divide_asteroids_after_collision_with_player_shots(remAsteroid, remPlayerShot) 
+		divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remEnemyShot) 
 	
-	check_collisions_between_asteroids_and_player(remAsteroid) 
-	check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
+		check_collisions_between_asteroids_and_player(remAsteroid) 
+		check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
 	
-	check_collision_between_enemy_shots_and_player(remEnemyShot) 
-	check_collision_between_player_shots_and_enemies(remPlayerShot, remEnemy) 
-	check_collision_between_player_and_enemies() 
+		check_collision_between_enemy_shots_and_player(remEnemyShot) 
+		check_collision_between_player_shots_and_enemies(remPlayerShot, remEnemy) 
+		check_collision_between_player_and_enemies() 
 	
-	move_players_shots(dt, remPlayerShot) 
-	move_enemies(dt) 
+		move_players_shots(dt, remPlayerShot) 
+		move_enemies(dt) 
 	
-	kill_or_respawn_player() 
-	enemies_shoot() 
-	update_enemy_shots() 
-	remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
+		kill_or_respawn_player() 
+		enemies_shoot() 
+		update_enemy_shots() 
+		remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
+	end 
 end
 
 function love.draw() 
-    -- let's draw a background 
-    love.graphics.setColor(255,255,255,255) 
-    love.graphics.draw(bg) 
+    
+	if (game_state == 3) then 
+		-- let's draw a background 
+		love.graphics.setColor(255,255,255,255) 
+		love.graphics.draw(bg) 
 	
-	draw_player() 
-	draw_asteroids() 
-	draw_shots() 
-	draw_enemies() 
+		draw_player() 
+		draw_asteroids() 
+		draw_shots() 
+		draw_enemies() 
 	
-	love.graphics.print(angle, 100, 100) 
+		love.graphics.print(angle, 100, 100) 
 	
-	draw_hud() 
+		draw_hud() 
 	
-	show_game_over_screen() 
+		show_game_over_screen() 
+	end 
 end 
 
 -- Collision detection function.
