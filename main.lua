@@ -1,6 +1,7 @@
 local angle = 0 
 local num_asteroids = 10 
 local asteroids_moving = false 
+local num_enemies = 5 
 
 function create_asteroid(x, y, magnitude, size, speed, angle) 
 	asteroid = {} 
@@ -22,18 +23,21 @@ function create_enemy(x, y, magnitude, size_x, size_y, speed, angle)
 	enemy.size_y = size_y 
 	enemy.speed = speed 
 	enemy.angle = angle 
+	enemy.alive = true 
 	return enemy 
 end 
 
-function enemy_shoot() 
-	if (math.random(100) <= 1) then 
-		shot = {} 
-		shot.x = objects.enemy.x 
-		shot.y = objects.enemy.y 
-		shot.active = true 
-		shot.speed = math.random(2.5) 
-		shot.angle = math.random(6.283) 
-		table.insert(objects.enemy.shots, shot) 
+function enemies_shoot() 
+	for index, enemy in ipairs(objects.enemy.shots) do 
+		if (math.random(100) <= 1) then 
+			shot = {} 
+			shot.x = enemy.x 
+			shot.y = enemy.y 
+			shot.active = true 
+			shot.speed = math.random(2.5) 
+			shot.angle = math.random(6.283) 
+			table.insert(objects.enemy.shots, shot) 
+		end 
 	end 
 end 
 
@@ -382,12 +386,15 @@ function move_players_shots(dt, remPlayerShot)
     end
 end 
 
-function move_enemy(dt) 
-	objects.enemy.x = objects.enemy.x + objects.enemy.speed * math.sin(objects.enemy.angle) * dt 
-	objects.enemy.y = objects.enemy.y + objects.enemy.speed * -math.cos(objects.enemy.angle) * dt 
+function move_enemies(dt) 
+	for index, enemy in ipairs(objects.enemies) do 
 	
-	if(math.random(1000) <= 1) then 
-		objects.enemy.angle = math.random(math.pi * 2) 
+		enemy.x = enemy.x + enemy.speed * math.sin(enemy.angle) * dt 
+		enemy.y = enemy.y + enemy.speed * -math.cos(enemy.angle) * dt 
+	
+		if(math.random(1000) <= 1) then 
+			objects.enemy.angle = math.random(math.pi * 2) 
+		end 
 	end 
 end 
 
@@ -402,9 +409,17 @@ function shoot()
     table.insert(objects.player.shots, shot) 
 end 
 
-function draw_enemy() 
-	if(objects.enemy.alive == true) then 
-		love.graphics.draw(enemy_img, objects.enemy.x, objects.enemy.y) 
+function draw_enemies() 
+	local x = 0 
+	local y = 0 
+	for index, enemy in ipairs(objects.enemies) do 
+		love.graphics.print(enemy.x, 0, y) 
+		love.graphics.print(enemy.y, 0, y + 20) 
+		y = y + 50 
+		if(enemy.alive == true) then 
+			love.graphics.draw(enemy_img, enemy.x, enemy.y) 
+		end 
+		
 	end 
 end 
 
@@ -475,12 +490,20 @@ function love.load()
     end 
 	
 	objects.enemy = {} 
-	objects.enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
-	objects.enemy.size = {} 
-	objects.enemy.size.x = 45 
-	objects.enemy.size.y = 18 
-	objects.enemy.speed = 20
-	objects.enemy.angle = 0 
+	objects.enemy.shots = {} 
+	objects.enemies = {} 
+	
+	for i = 1, num_enemies do 
+		enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
+		table.insert(objects.enemies, enemy) 
+	end 
+	
+	--objects.enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
+	--objects.enemy.size = {} 
+	--objects.enemy.size.x = 45 
+	--objects.enemy.size.y = 18 
+	--objects.enemy.speed = 20
+	--objects.enemy.angle = 0 
 	
     bg = love.graphics.newImage("bg.png") 
 	statek = love.graphics.newImage("statek.png") 
@@ -489,25 +512,6 @@ function love.load()
 	srednia_asteroida = love.graphics.newImage("srednia_asteroida.png") 
 	mala_asteroida = love.graphics.newImage("mala_asteroida.png") 
 	enemy_img = love.graphics.newImage("enemy.png") 
-	
-    hero = {} -- new table for the hero 
-    hero.x = 300    -- x,y coordinates of the hero 
-    hero.y = 450 
-    hero.width = 30 
-    hero.height = 15 
-    hero.speed = 150 
-
-    enemies = {}
-
-    for i=0,7 do 
-        enemy = {} 
-        enemy.width = 40 
-        enemy.height = 20 
-        enemy.x = i * (enemy.width + 60) + 100 
-        enemy.y = enemy.height + 100 
-        table.insert(enemies, enemy) 
-    end
-
 end
 
 function love.update(dt)
@@ -527,17 +531,17 @@ function love.update(dt)
 	divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remEnemyShot) 
 	
 	check_collisions_between_asteroids_and_player(remAsteroid) 
-	check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
+	--check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
 	
 	check_collision_between_enemy_shots_and_player(remEnemyShot) 
-	check_collision_between_player_shots_and_enemy(remPlayerShot) 
-	check_collision_between_player_and_enemy() 
+	--check_collision_between_player_shots_and_enemy(remPlayerShot) 
+	--check_collision_between_player_and_enemy() 
 	
 	move_players_shots(dt, remPlayerShot) 
-	move_enemy(dt) 
+	move_enemies(dt) 
 	
-	enemy_shoot() 
-	update_enemy_shots() 
+	enemies_shoot() 
+	--update_enemy_shots() 
 	remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
 end
 
@@ -549,7 +553,7 @@ function love.draw()
 	draw_player() 
 	draw_asteroids() 
 	draw_shots() 
-	draw_enemy() 
+	draw_enemies() 
 	
 	love.graphics.print(angle, 100, 100) 
 	
