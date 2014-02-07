@@ -2,7 +2,7 @@ local angle = 0
 local num_asteroids = 10 
 local asteroids_moving = false 
 local num_enemies = 5  
-local game_state = 0 -- 0 - main menu, 2 - credits, 3 - game 
+local game_state = 0 -- 0 - main menu, 1 - credits, 2 - game 
 
 function create_asteroid(x, y, magnitude, size, speed, angle) 
 	asteroid = {} 
@@ -26,6 +26,49 @@ function create_enemy(x, y, magnitude, size_x, size_y, speed, angle)
 	enemy.angle = angle 
 	enemy.alive = true 
 	return enemy 
+end 
+
+function show_main_menu_screen() 
+	love.graphics.print("New game", 650/2, 650/2 - 100) 
+	love.graphics.print("Credits", 650/2, 650/2) 
+	love.graphics.print("Exit", 650/2, 650/2 + 100) 
+	
+	--love.graphics.draw(mouse_pointer, love.mouse.getX() - mouse_pointer:getWidth() / 2, love.mouse.getY() - mouse_pointer:getHeight() / 2)
+end 
+
+function show_credits_screen() 
+	love.graphics.print("Programming: Paweł Jastrzębski", 650/2, 650/2 - 200) 
+	love.graphics.print("Game design: Radosław Smyk", 650/2, 650/2 - 100) 
+	love.graphics.print("Graphics: Michał Król", 650/2, 650/2) 
+	love.graphics.print("Music: ????", 650/2, 650/2 + 100) 
+	love.graphics.print("Back", 650/2, 650/2 + 100) 
+	
+	--love.graphics.draw(mouse_pointer, love.mouse.getX() - mouse_pointer:getWidth() / 2, love.mouse.getY() - mouse_pointer:getHeight() / 2)
+end 
+
+function update_main_menu_screen() 
+	
+	if (love.mouse.isDown("l")) then 
+		if (love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 + 100 and 
+			love.mouse.getY() > 650/2 - 50 and love.mouse.getY() < 650/2 + 50) then 
+				game_state = 2 
+		elseif (love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 and 
+				love.mouse.getY() > 650/2 and love.mouse.getY() < 650/2) then 
+				game_state = 1 
+		elseif (love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 and 
+				love.mouse.getY() > 650/2 and love.mouse.getY() < 650/2) then 
+				love.event.quit() 
+		end 
+	end 
+end 
+
+function update_credits_screen() 
+	
+	if (love.mouse.isDown("l") and love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 + 100 and 
+		love.mouse.getY() > 650/2 + 100 and love.mouse.getY() < 650/2 + 100) then 
+			game_state = 0 
+	end 
+	--love.graphics.draw(mouse_pointer, love.mouse.getX() - mouse_pointer:getWidth() / 2, love.mouse.getY() - mouse_pointer:getHeight() / 2)
 end 
 
 function enemies_shoot() 
@@ -505,12 +548,17 @@ function love.load()
 	srednia_asteroida = love.graphics.newImage("srednia_asteroida.png") 
 	mala_asteroida = love.graphics.newImage("mala_asteroida.png") 
 	enemy_img = love.graphics.newImage("enemy.png") 
+	mouse_pointer = love.graphics.newImage("mouse_pointer.png") 
 end
 
 function love.update(dt)
     
-	if (game_state == 3) then 
-		world:update(dt)
+	if (game_state == 0) then 
+		update_main_menu_screen() 
+	elseif (game_state == 1) then 
+		update_credits_screen() 
+	elseif (game_state == 3) then 
+		world:update(dt) 
 	
 		local remEnemy = {} 
 		local remPlayerShot = {} 
@@ -539,12 +587,18 @@ function love.update(dt)
 		enemies_shoot() 
 		update_enemy_shots() 
 		remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
+	else 
+		show_game_over() 
 	end 
 end
 
 function love.draw() 
     
-	if (game_state == 3) then 
+	if (game_state == 0) then 
+		show_main_menu_screen() 
+	elseif (game_state == 1) then 
+		show_credits_screen() 
+	elseif (game_state == 3) then 
 		-- let's draw a background 
 		love.graphics.setColor(255,255,255,255) 
 		love.graphics.draw(bg) 
@@ -557,7 +611,7 @@ function love.draw()
 		love.graphics.print(angle, 100, 100) 
 	
 		draw_hud() 
-	
+	else 
 		show_game_over_screen() 
 	end 
 end 
