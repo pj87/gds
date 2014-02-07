@@ -139,8 +139,7 @@ function kill_or_respawn_player()
 		--objects.player.respawn_start_time = love.timer.getTime 
 		objects.player.lives = objects.player.lives - 1 
 		objects.player.respawn = false 
-		objects.player.body:setX(650/2) 
-		objects.player.body:setY(650/2) 
+		objects.player.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") 
 	end 
 end 
 
@@ -227,15 +226,15 @@ function check_collision_between_enemy_shots_and_player(remShot)
 				and shot.y + size_shot >= objects.player.body:getY() and shot.y <= objects.player.body:getY() + size_player_y) then 
 				table.insert(remShot, index) 
 				shot.active = false 
-				objects.player.alive = false 
+				objects.player.respawn = true 
 			end 
 		end 
 end 
 
-function check_collision_between_player_shots_and_enemies(remShot) -- to implement 
+function check_collision_between_player_shots_and_enemies(remShot, remEnemy) -- to implement 
 	-- collisions 
 		for index, shot in ipairs(objects.player.shots) do 
-			for i, enemy in ipairs(objects.enemy) do 
+			for i, enemy in ipairs(objects.enemies) do 
 				size_enemy_x = enemy.size_x  
 				size_enemy_y = enemy.size_y 
 			
@@ -243,9 +242,9 @@ function check_collision_between_player_shots_and_enemies(remShot) -- to impleme
 				if (shot.active == true and shot.x + size_shot >= enemy.x and shot.x <= enemy.x + size_enemy_x 
 					and shot.y + size_shot >= enemy.y and shot.y <= enemy.y + size_enemy_y) then 
 					table.insert(remShot, index) 
+					table.insert(remEnemy, i) 
 					objects.player.score = objects.player.score + 20 
 					shot.active = false 
-					objects.player.alive = false 
 				end 
 			end 
 		end 
@@ -351,7 +350,7 @@ end
 function remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
 	-- remove the marked enemies 
     for i,v in ipairs(remEnemy) do 
-        table.remove(enemies, v) 
+        table.remove(objects.enemies, v) 
     end 
 
     for i,v in ipairs(remPlayerShot) do 
@@ -527,7 +526,7 @@ function love.update(dt)
 	check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
 	
 	check_collision_between_enemy_shots_and_player(remEnemyShot) 
-	check_collision_between_player_shots_and_enemies(remPlayerShot) 
+	check_collision_between_player_shots_and_enemies(remPlayerShot, remEnemy) 
 	check_collision_between_player_and_enemies() 
 	
 	move_players_shots(dt, remPlayerShot) 
