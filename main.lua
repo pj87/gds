@@ -233,7 +233,6 @@ function check_collisions_between_asteroids_and_enemy_ship(remAsteroid)
 			if (enemy.alive == true and enemy.x + size_enemy_x >= asteroid.body:getX() and enemy.x <= asteroid.body:getX() + size_asteroid 
 				and enemy.y + size_enemy_y >= asteroid.body:getY() and enemy.y <= asteroid.body:getY() + size_asteroid) then 
 			
-				--love.graphics.print("Game Over", objects.player.body:getX() + 25, objects.player.body:getY() + 25) 
 				objects.enemy.alive = false 
 				asteroid.magnitude = asteroid.magnitude - 1 
 				local magnitude = asteroid.magnitude 
@@ -388,6 +387,24 @@ function check_all_outside_screen()
 	
 	if (objects.player.body:getY() > 600) then 
 		objects.player.body:setY(0) 
+	end 
+	
+	for i, enemy in ipairs(objects.enemies) do 
+		if (enemy.x > 650) then 
+			enemy.x = 0; 
+		end 
+		
+		if (enemy.x < 0) then 
+			enemy.x = 650; 
+		end 	
+			
+		if (enemy.y > 650) then 
+			enemy.y = 0; 
+		end  
+		
+		if (enemy.y < 0) then 
+			enemy.y = 650; 
+		end 
 	end 
 end 
 
