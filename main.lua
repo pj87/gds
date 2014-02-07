@@ -2,7 +2,7 @@ local angle = 0
 local num_asteroids = 10 
 local asteroids_moving = false 
 local num_enemies = 5  
-local game_state = 0 -- 0 - main menu, 1 - credits, 2 - game 
+local game_state = 0 -- 0 - main menu, 1 - credits, 2 - game, 3 - game over 
 
 function create_asteroid(x, y, magnitude, size, speed, angle) 
 	asteroid = {} 
@@ -471,11 +471,11 @@ function draw_hud()
 end 
 
 function show_game_over_screen()
-	if (objects.player.alive == false) then 
-		love.graphics.print("Game Over", 650 / 2, 650 / 2) 
-		love.graphics.print("Your score: ", 650 / 2, 650 / 2 + 20) 
-		love.graphics.print(objects.player.score, 650 / 2 + 100, 650 / 2 + 20) 
-	end 
+	--if (objects.player.alive == false) then 
+	love.graphics.print("Game Over", 650 / 2, 650 / 2) 
+	love.graphics.print("Your score: ", 650 / 2, 650 / 2 + 20) 
+	love.graphics.print(objects.player.score, 650 / 2 + 100, 650 / 2 + 20) 
+	--end 
 end 
 
 function control_player(dt) 
@@ -552,12 +552,17 @@ function love.load()
 end
 
 function love.update(dt)
-    
+	
+	if (game_state == 2 and objects.player.lives == -1) then 
+		game_state = 3 
+	end 
+	
 	if (game_state == 0) then 
 		update_main_menu_screen() 
 	elseif (game_state == 1) then 
 		update_credits_screen() 
 	elseif (game_state == 2) then 
+	
 		world:update(dt) 
 	
 		local remEnemy = {} 
@@ -587,6 +592,7 @@ function love.update(dt)
 		enemies_shoot() 
 		update_enemy_shots() 
 		remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
+		
 	else 
 		show_game_over_screen() 
 	end 
