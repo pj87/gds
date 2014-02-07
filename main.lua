@@ -1,7 +1,7 @@
 local angle = 0 
 local num_asteroids = 10 
 local asteroids_moving = false 
-local num_enemies = 5 
+local num_enemies = 5  
 
 function create_asteroid(x, y, magnitude, size, speed, angle) 
 	asteroid = {} 
@@ -241,38 +241,41 @@ function check_collision_between_enemy_shots_and_player(remShot)
 		end 
 end 
 
-function check_collision_between_player_shots_and_enemy(remShot) -- to implement 
+function check_collision_between_player_shots_and_enemies(remShot) -- to implement 
 	-- collisions 
 		for index, shot in ipairs(objects.player.shots) do 
+			for i, enemy in ipairs(objects.enemy) do 
+				size_enemy_x = enemy.size_x  
+				size_enemy_y = enemy.size_y 
 			
-			size_enemy_x = objects.enemy.size.x  
-			size_enemy_y = objects.enemy.size.y 
-			
-			size_shot = 10 
-			if (shot.active == true and shot.x + size_shot >= objects.enemy.x and shot.x <= objects.enemy.x + size_enemy_x 
-				and shot.y + size_shot >= objects.enemy.y and shot.y <= objects.enemy.y + size_enemy_y) then 
-				table.insert(remShot, index) 
-				shot.active = false 
-				objects.player.alive = false 
+				size_shot = 10 
+				if (shot.active == true and shot.x + size_shot >= enemy.x and shot.x <= enemy.x + size_enemy_x 
+					and shot.y + size_shot >= enemy.y and shot.y <= enemy.y + size_enemy_y) then 
+					table.insert(remShot, index) 
+					shot.active = false 
+					objects.player.alive = false 
+				end 
 			end 
 		end 
 end 
 
-function check_collision_between_player_and_enemy() 
+function check_collision_between_player_and_enemies() 
 	
-	size_enemy_x = objects.enemy.size.x 
-	size_enemy_y = objects.enemy.size.y 
+	for i, enemy in ipairs(objects.enemies) do 
+		size_enemy_x = enemy.size_x 
+		size_enemy_y = enemy.size_y 
 	
-	size_player_x = objects.player.size.x 
-	size_player_y = objects.player.size.y 
+		size_player_x = objects.player.size.x 
+		size_player_y = objects.player.size.y 
 	
-	if (objects.player.alive == true and objects.player.body:getX() + size_player_x >= objects.enemy.x and objects.player.body:getX() <= objects.enemy.x + size_enemy_x 
-		and objects.player.body:getY() + size_player_y >= objects.enemy.y and objects.player.body:getY() <= objects.enemy.y + size_enemy_y) then 
-			objects.player.alive = false 			
+		if (objects.player.alive == true and objects.player.body:getX() + size_player_x >= enemy.x and objects.player.body:getX() <= enemy.x + size_enemy_x 
+			and objects.player.body:getY() + size_player_y >= enemy.y and objects.player.body:getY() <= enemy.y + size_enemy_y) then 
+				objects.player.alive = false 
+		end 
 	end 
 end 
 
--- draws both enemie's and playter's shots 
+-- draws both enemie's and player's shots 
 function draw_shots() 
 	-- let's draw our heros shots 
     love.graphics.setColor(255,255,255,255) 
@@ -528,8 +531,8 @@ function love.update(dt)
 	check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
 	
 	check_collision_between_enemy_shots_and_player(remEnemyShot) 
-	--check_collision_between_player_shots_and_enemy(remPlayerShot) 
-	--check_collision_between_player_and_enemy() 
+	check_collision_between_player_shots_and_enemies(remPlayerShot) 
+	check_collision_between_player_and_enemies() 
 	
 	move_players_shots(dt, remPlayerShot) 
 	move_enemies(dt) 
