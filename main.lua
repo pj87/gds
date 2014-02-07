@@ -564,7 +564,11 @@ function love.update(dt)
 	elseif (game_state == 2) then 
 	
 		world:update(dt) 
-	
+		
+		if(love.keyboard.isDown("escape")) then 
+			game_state = 0 
+		end 
+		
 		local remEnemy = {} 
 		local remPlayerShot = {} 
 		local remEnemyShot = {} 
@@ -594,7 +598,9 @@ function love.update(dt)
 		remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
 		
 	else 
-		show_game_over_screen() 
+		if(love.keyboard.isDown("escape")) then 
+			game_state = 0 
+		end 
 	end 
 end
 
