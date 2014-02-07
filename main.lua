@@ -28,7 +28,7 @@ function create_enemy(x, y, magnitude, size_x, size_y, speed, angle)
 end 
 
 function enemies_shoot() 
-	for index, enemy in ipairs(objects.enemy.shots) do 
+	for index, enemy in ipairs(objects.enemies) do 
 		if (math.random(100) <= 1) then 
 			shot = {} 
 			shot.x = enemy.x 
@@ -541,7 +541,7 @@ function love.update(dt)
 	move_enemies(dt) 
 	
 	enemies_shoot() 
-	--update_enemy_shots() 
+	update_enemy_shots() 
 	remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
 end
 
