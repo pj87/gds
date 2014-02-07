@@ -127,14 +127,20 @@ function check_collision_between_enemy_shots_and_player(remShot)
 				and shot.y + size_shot >= objects.player.body:getY() and shot.y <= objects.player.body:getY() + size_player_y) then 
 					table.insert(remShot, index) 
 					shot.active = false 
-					kill_and_respawn_player() 
+					objects.player.respawn = true 
 			end 
 	end 
 end 
 
-function kill_and_respawn_player() 
-	objects.player.alive = false 
-	objects.player.lives = objects.player.lives - 1 
+function kill_or_respawn_player() 
+	
+	if(objects.player.respawn == true) then 
+		--objects.player.respawn_start_time = love.timer.getTime 
+		objects.player.lives = objects.player.lives - 1 
+		objects.player.respawn = false 
+		objects.player.body:setX(650/2) 
+		objects.player.body:setY(650/2) 
+	end 
 end 
 
 function check_collisions_between_asteroids_and_player(remAsteroid) 
@@ -147,7 +153,8 @@ function check_collisions_between_asteroids_and_player(remAsteroid)
 		if (objects.player.alive == true and objects.player.body:getX() + size_player_x >= asteroid.body:getX() and objects.player.body:getX() <= asteroid.body:getX() + size_asteroid 
 			and objects.player.body:getY() + size_player_y >= asteroid.body:getY() and objects.player.body:getY() <= asteroid.body:getY() + size_asteroid) then 
 			
-			kill_and_respawn_player() 
+			--kill_and_respawn_player() 
+			objects.player.respawn = true 
 			--love.graphics.print("Game Over", objects.player.body:getX() + 25, objects.player.body:getY() + 25) 
 			
 			asteroid.magnitude = asteroid.magnitude - 1 
@@ -212,7 +219,7 @@ function check_collision_between_enemy_shots_and_player(remShot)
 		for index, shot in ipairs(objects.enemy.shots) do 
 			
 			size_player_x = objects.player.size.x 
-			size_player_x = objects.player.size.y 
+			size_player_y = objects.player.size.y 
 			
 			size_shot = 10 
 			if (shot.active == true and shot.x + size_shot >= objects.player.body:getX() and shot.x <= objects.player.body:getX() + size_player_x 
@@ -295,7 +302,7 @@ function draw_asteroids()
 end
 
 function draw_player() 
-	if(objects.player.alive == true) then 
+	if(objects.player.alive == true and objects.player.respawn == false) then 
 		love.graphics.push() 
 		love.graphics.draw(statek, objects.player.body:getX(), objects.player.body:getY(), angle, 1, 1, 25, 25) 
 		love.graphics.pop() 
@@ -400,9 +407,9 @@ function draw_enemies()
 	local x = 0 
 	local y = 0 
 	for index, enemy in ipairs(objects.enemies) do 
-		love.graphics.print(enemy.x, 0, y) 
-		love.graphics.print(enemy.y, 0, y + 20) 
-		y = y + 50 
+		--love.graphics.print(enemy.x, 0, y) 
+		--love.graphics.print(enemy.y, 0, y + 20) 
+		--y = y + 50 
 		if(enemy.alive == true) then 
 			love.graphics.draw(enemy_img, enemy.x, enemy.y) 
 		end 
@@ -468,6 +475,7 @@ function love.load()
 	objects.player.shots = {} 
 	objects.player.lives = 3 
 	objects.player.points = 0 
+	objects.player.respawn = false 
 	
 	objects.asteroids = {} 
 	
@@ -520,6 +528,7 @@ function love.update(dt)
 	move_players_shots(dt, remPlayerShot) 
 	move_enemies(dt) 
 	
+	kill_or_respawn_player() 
 	enemies_shoot() 
 	update_enemy_shots() 
 	remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
