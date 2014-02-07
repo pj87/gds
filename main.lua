@@ -57,6 +57,7 @@ function divide_asteroids_after_collision_with_player_shots(remAsteroid, remShot
 			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
 			and shot.y + size_shot >= asteroid.body:getY() and shot.y <= asteroid.body:getY() + size_asteroid) then 
 				table.insert(remShot, index) 
+				objects.player.score = objects.player.score + 10 
 				shot.active = false 
 				asteroid.magnitude = asteroid.magnitude - 1 
 				local magnitude = asteroid.magnitude 
@@ -161,7 +162,7 @@ function check_collisions_between_asteroids_and_player(remAsteroid)
 			local magnitude = asteroid.magnitude 
 			local pos_x = asteroid.body:getX() 
 			local pos_y = asteroid.body:getY() 
-
+			
 			if (magnitude == 2) then 
 				asteroid.size = 40 
 				asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
@@ -242,6 +243,7 @@ function check_collision_between_player_shots_and_enemies(remShot) -- to impleme
 				if (shot.active == true and shot.x + size_shot >= enemy.x and shot.x <= enemy.x + size_enemy_x 
 					and shot.y + size_shot >= enemy.y and shot.y <= enemy.y + size_enemy_y) then 
 					table.insert(remShot, index) 
+					objects.player.score = objects.player.score + 20 
 					shot.active = false 
 					objects.player.alive = false 
 				end 
@@ -260,7 +262,7 @@ function check_collision_between_player_and_enemies()
 	
 		if (objects.player.alive == true and objects.player.body:getX() + size_player_x >= enemy.x and objects.player.body:getX() <= enemy.x + size_enemy_x 
 			and objects.player.body:getY() + size_player_y >= enemy.y and objects.player.body:getY() <= enemy.y + size_enemy_y) then 
-				objects.player.alive = false 
+				objects.player.respawn = true 
 		end 
 	end 
 end 
@@ -422,12 +424,14 @@ function draw_hud()
 	love.graphics.print(objects.player.lives, 70, 20) 
 	
 	love.graphics.print("Points: ", 20, 30) 
-	love.graphics.print(objects.player.points, 70, 30) 
+	love.graphics.print(objects.player.score, 70, 30) 
 end 
 
 function show_game_over_screen()
 	if (objects.player.alive == false) then 
 		love.graphics.print("Game Over", 650 / 2, 650 / 2) 
+		love.graphics.print("Your score: ", 650 / 2, 650 / 2 + 20) 
+		love.graphics.print(objects.player.score, 650 / 2 + 100, 650 / 2 + 20) 
 	end 
 end 
 
@@ -476,6 +480,7 @@ function love.load()
 	objects.player.lives = 3 
 	objects.player.points = 0 
 	objects.player.respawn = false 
+	objects.player.score = 0 
 	
 	objects.asteroids = {} 
 	
