@@ -191,33 +191,34 @@ end
 
 function check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
 	for index, asteroid in ipairs(objects.asteroids) do 
-	
-		size_asteroid = asteroid.size 
-		size_enemy_x = 45 --50 
-		size_enemy_y = 18 --55 
+		for i, enemy in ipairs(objects.enemies) do 
+			size_asteroid = asteroid.size 
+			size_enemy_x = enemy.size_x 
+			size_enemy_y = enemy.size_y 
 		
-		if (objects.player.alive == true and objects.enemy.x + size_enemy_x >= asteroid.body:getX() and objects.enemy.x <= asteroid.body:getX() + size_asteroid 
-			and objects.enemy.y + size_enemy_y >= asteroid.body:getY() and objects.enemy.y <= asteroid.body:getY() + size_asteroid) then 
+			if (enemy.alive == true and enemy.x + size_enemy_x >= asteroid.body:getX() and enemy.x <= asteroid.body:getX() + size_asteroid 
+				and enemy.y + size_enemy_y >= asteroid.body:getY() and enemy.y <= asteroid.body:getY() + size_asteroid) then 
 			
-			--love.graphics.print("Game Over", objects.player.body:getX() + 25, objects.player.body:getY() + 25) 
-			objects.enemy.alive = false 
-			asteroid.magnitude = asteroid.magnitude - 1 
-			local magnitude = asteroid.magnitude 
-			local pos_x = asteroid.body:getX() 
-			local pos_y = asteroid.body:getY() 
+				--love.graphics.print("Game Over", objects.player.body:getX() + 25, objects.player.body:getY() + 25) 
+				objects.enemy.alive = false 
+				asteroid.magnitude = asteroid.magnitude - 1 
+				local magnitude = asteroid.magnitude 
+				local pos_x = asteroid.body:getX() 
+				local pos_y = asteroid.body:getY() 
 
-			if (magnitude == 2) then 
-				asteroid.size = 40 
-				asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
-				asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
-				table.insert(objects.asteroids, asteroid_new) 
-			elseif (magnitude == 1) then 
-				asteroid.size = 25 
-				asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(math.pi *2)) 
-				asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
-				table.insert(objects.asteroids, asteroid_new) 
-			else 
-				table.insert(remAsteroid, i) 
+				if (magnitude == 2) then 
+					asteroid.size = 40 
+					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
+					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
+					table.insert(objects.asteroids, asteroid_new) 
+				elseif (magnitude == 1) then 
+					asteroid.size = 25 
+					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(math.pi *2)) 
+					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
+					table.insert(objects.asteroids, asteroid_new) 
+				else 
+					table.insert(remAsteroid, index) 
+				end 
 			end 
 		end 
 	end 
@@ -498,13 +499,6 @@ function love.load()
 		table.insert(objects.enemies, enemy) 
 	end 
 	
-	--objects.enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
-	--objects.enemy.size = {} 
-	--objects.enemy.size.x = 45 
-	--objects.enemy.size.y = 18 
-	--objects.enemy.speed = 20
-	--objects.enemy.angle = 0 
-	
     bg = love.graphics.newImage("bg.png") 
 	statek = love.graphics.newImage("statek.png") 
 	pocisk = love.graphics.newImage("pocisk.png") 
@@ -531,7 +525,7 @@ function love.update(dt)
 	divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remEnemyShot) 
 	
 	check_collisions_between_asteroids_and_player(remAsteroid) 
-	--check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
+	check_collisions_between_asteroids_and_enemy_ship(remAsteroid) 
 	
 	check_collision_between_enemy_shots_and_player(remEnemyShot) 
 	--check_collision_between_player_shots_and_enemy(remPlayerShot) 
