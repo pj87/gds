@@ -50,13 +50,13 @@ function update_main_menu_screen()
 	
 	if (love.mouse.isDown("l")) then 
 		if (love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 + 100 and 
-			love.mouse.getY() > 650/2 - 50 and love.mouse.getY() < 650/2 + 50) then 
+			love.mouse.getY() > 650/2 - 100 and love.mouse.getY() < 650/2) then 
 				game_state = 2 
-		elseif (love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 and 
-				love.mouse.getY() > 650/2 and love.mouse.getY() < 650/2) then 
+		elseif (love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 + 100 and 
+				love.mouse.getY() >= 650/2 and love.mouse.getY() < 650/2 + 100) then 
 				game_state = 1 
-		elseif (love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 and 
-				love.mouse.getY() > 650/2 and love.mouse.getY() < 650/2) then 
+		elseif (love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 + 100 and 
+				love.mouse.getY() >= 650/2 + 100 and love.mouse.getY() < 650/2 + 200) then 
 				love.event.quit() 
 		end 
 	end 
@@ -557,7 +557,7 @@ function love.update(dt)
 		update_main_menu_screen() 
 	elseif (game_state == 1) then 
 		update_credits_screen() 
-	elseif (game_state == 3) then 
+	elseif (game_state == 2) then 
 		world:update(dt) 
 	
 		local remEnemy = {} 
@@ -588,7 +588,7 @@ function love.update(dt)
 		update_enemy_shots() 
 		remove_actors(remEnemy, remPlayerShot, remEnemyShot, remAsteroid) 
 	else 
-		show_game_over() 
+		show_game_over_screen() 
 	end 
 end
 
@@ -598,7 +598,7 @@ function love.draw()
 		show_main_menu_screen() 
 	elseif (game_state == 1) then 
 		show_credits_screen() 
-	elseif (game_state == 3) then 
+	elseif (game_state == 2) then 
 		-- let's draw a background 
 		love.graphics.setColor(255,255,255,255) 
 		love.graphics.draw(bg) 
