@@ -41,7 +41,7 @@ function show_credits_screen()
 	love.graphics.print("Game design: Radosław Smyk", 650/2, 650/2 - 100) 
 	love.graphics.print("Graphics: Michał Król", 650/2, 650/2) 
 	love.graphics.print("Music: ????", 650/2, 650/2 + 100) 
-	love.graphics.print("Back", 650/2, 650/2 + 100) 
+	love.graphics.print("Back", 650/2, 650/2 + 200) 
 	
 	--love.graphics.draw(mouse_pointer, love.mouse.getX() - mouse_pointer:getWidth() / 2, love.mouse.getY() - mouse_pointer:getHeight() / 2)
 end 
@@ -65,7 +65,7 @@ end
 function update_credits_screen() 
 	
 	if (love.mouse.isDown("l") and love.mouse.getX() > 650/2 and love.mouse.getX() < 650/2 + 100 and 
-		love.mouse.getY() > 650/2 + 100 and love.mouse.getY() < 650/2 + 100) then 
+		love.mouse.getY() > 650/2 + 200 and love.mouse.getY() < 650/2 + 300) then 
 			game_state = 0 
 	end 
 	--love.graphics.draw(mouse_pointer, love.mouse.getX() - mouse_pointer:getWidth() / 2, love.mouse.getY() - mouse_pointer:getHeight() / 2)
