@@ -114,38 +114,21 @@ function divide_asteroids_after_collision_with_enemy_shots(remAsteroid, remShot)
 	end 
 end 
 
+
+
 function check_collision_between_enemy_shots_and_player(remShot) 
 	-- collisions 
 	for index, shot in ipairs(objects.enemy.shots) do 
-		for i, asteroid in ipairs(objects.asteroids) do 
-			--if (shot.x > objects.asteroids[i].x and shot.y > objects.asteroids[i].y) 
-			--if (shot.active == true and CheckCollision(shot.x, shot.y, 10, 10, objects.asteroids[i].body:getX(), objects.asteroids[i].body:getY(), 50, 50) == true)  then 
-			size_asteroid = asteroid.size 
+			size_player_x = objects.player.size.x 
+			size_player_y = objects.player.size.y 
+			
 			size_shot = 10 
-			if (shot.active == true and shot.x + size_shot >= asteroid.body:getX() and shot.x <= asteroid.body:getX() + size_asteroid 
-			and shot.y + size_shot >= asteroid.body:getY() and shot.y <= asteroid.body:getY() + size_asteroid) then 
-				table.insert(remShot, index) 
-				shot.active = false 
-				asteroid.magnitude = asteroid.magnitude - 1 
-				local magnitude = asteroid.magnitude 
-				local pos_x = asteroid.body:getX() 
-				local pos_y = asteroid.body:getY() 
-
-				if (magnitude == 2) then 
-					asteroid.size = 40 
-					asteroid_new = create_asteroid(pos_x + 20, pos_y + 20, 2, 40, 50, math.random(math.pi * 2)) 
-					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle)) 
-					
-				elseif (magnitude == 1) then 
-					asteroid.size = 25 
-					asteroid_new = create_asteroid(pos_x + 12.5, pos_y + 12.5, 1, 25, 50, math.random(math.pi *2)) 
-					asteroid_new.body:applyForce(asteroid_new.speed * math.sin(asteroid_new.angle), -asteroid_new.speed * math.cos(asteroid_new.angle))
-					table.insert(objects.asteroids, asteroid_new) 
-				else 
-					table.insert(remAsteroid, i) 
-				end 		
+			if (shot.active == true and objects.player.active == true and shot.x + size_shot >= objects.player.body:getX() and shot.x <= objects.player.body:getX() + size_player_x 
+				and shot.y + size_shot >= objects.player.body:getY() and shot.y <= objects.player.body:getY() + size_player_y) then 
+					table.insert(remShot, index) 
+					shot.active = false 
+					kill_and_respawn_player() 
 			end 
-		end 
 	end 
 end 
 
