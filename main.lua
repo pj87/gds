@@ -96,6 +96,12 @@ function update_enemy_shots()
 	end 
 end 
 
+function check_next_level() 
+	if (next(objects.enemies) == nil and next(objects.asteroids) == nil) then
+		 reset_game_to_next_level() 
+	end 
+end 
+
 function divide_asteroids_after_collision_with_player_shots(remAsteroid, remShot) 
 	-- collisions 
 	for index, shot in ipairs(objects.player.shots) do 
@@ -578,6 +584,42 @@ function reset_game_to_defaults()
 	end 
 end 
 
+function reset_game_to_next_level() 
+	love.physics.setMeter(64) --the height of a meter our worlds will be 64px
+    world = love.physics.newWorld(0, 0, true) --create a world for the bodies to exist in with horizontal gravity of 0 and vertical gravity of 9.81    
+
+    --objects = {} -- table to hold all our physical objects 
+
+    --let's create a player 
+    --objects.player = {} 
+    objects.player.body = love.physics.newBody(world, 650/2, 650/2, "dynamic") --place the body in the center of the world and make it dynamic, so it can move around 
+	objects.player.alive = true 
+	objects.player.size = {} 
+	objects.player.size.x = 30 
+	objects.player.size.y = 25 
+	objects.player.shots = {} 
+	objects.player.lives = 3 
+	objects.player.respawn = false 
+	objects.player.score = 0 
+	
+	objects.asteroids = {} 
+	
+	for i = 1, num_asteroids do 
+		asteroid = create_asteroid(math.random(500), math.random(500), 3, 60, math.random(500) + 500, math.random(6.283)) 
+		asteroid.body:applyForce(asteroid.speed * math.sin(asteroid.angle), -asteroid.speed * math.cos(asteroid.angle)) 
+		table.insert(objects.asteroids, asteroid) 
+    end 
+	
+	objects.enemy = {} 
+	objects.enemy.shots = {} 
+	objects.enemies = {} 
+	
+	for i = 1, num_enemies do 
+		enemy = create_enemy(math.random(500), math.random(500), 1, 45, 18, 20, math.random(6.283)) 
+		table.insert(objects.enemies, enemy) 
+	end 
+end 
+
 function love.load() 
     bg = love.graphics.newImage("bg.png") 
 	statek = love.graphics.newImage("statek.png") 
@@ -605,6 +647,8 @@ function love.update(dt)
 	elseif (game_state == 1) then 
 		update_credits_screen() 
 	elseif (game_state == 2) then 
+	
+		check_next_level() 
 	
 		world:update(dt) 
 		
