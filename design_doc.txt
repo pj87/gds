@@ -1,0 +1,197 @@
+Legenda:
+* elementy nowe w stosunku do oryginalnego Asteroids/Asteroids Deluxe*
+=== NAGŁÓWKI SEKCJI ===
+??? problemy do przedyskutowania w większym gronie ???
+// komentarze, to-do, tzw. inne //
+
+Projekt: Asteroids
+
+Koncept: Remake klasycznej gry Asteroids, wraz z nowymi funkcjami - powiększonym obszarem gry, kamerą śledzącą gracza i power-upami.
+Poniższy dokument (poza wartościami punktów, chwilowy brak źródeł) opisuje rozgrywkę z wersji Asteroids Deluxe (1981), z niewielkimi zmianami.
+
+	=============== GAMEPLAY ===================
+Gracz steruje statkiem, znajdującym się na dwuwymiarowej płaszczyźnie, imitującej przestrzeń kosmiczną. Dookoła statku latają w losowy sposób z jednostajną prędkością asteroidy. W ustalonych interwałach pojawia się statek obcej cywilizacji. 
+Celem gracza jest zdobycie jak największej ilości punktów, poprzez rozbijanie asteroid i zestrzeliwywanie ufoludków.
+
+Statek gracza:
+	Posiada trzy życia na początku, ??? możliwość zdobywania kolejnych jako power-up ???
+	Porusza się tylko do przodu, nie posiada hamulców. Silniki statku dodają mu jednostajnie przyspieszenia.
+	Może obracać się prawo/lewo
+	Posiada możliwość strzelania (bazowo pojedynczy pocisk o prędkości większej niż maksymalna prędkość statku kosmicznego)
+	
+Asteroidy:
+	Występują w trzech rozmiarach, dużym, średnim i małym.
+		Duże asteroidy poruszają się wolno, po trafieniu rozbijają się na trzy średnie.
+		Średnie asteroidy poruszają się umiarkowanie szybko, po trafieniu rozpadają się na trzy małe.
+		Małe asteroidy poruszają się najszybciej, a po trafieniu ulegają dezintegracji. 
+	
+Statki ufoludków:
+	Występują w dwóch typach - Mr. Bill i Slugg.
+		* Tuż przed pojawieniem się UFO odtwarzany jest dźwięk ostrzegawczy *
+		Mr. Bill to duży, wolny statek poruszający się horyzontalnie po ekranie.
+		Mr. Bill wystrzeliwuje pociski w umiarkowanym tempie, w losowych kierunkach. Nie podąża w stronę gracza.
+		Slugg to mały, szybki statek, poruszający się w *dowolny sposób* pomiędzy dwoma przeciwległymi punktami ekranu. Nie śledzi statku gracza, ale przelatuje przez obszar gry.
+		Slugg wystrzeliwuje pociski rzadziej niż Mr. Bill, ale celowane są w aktualną pozycję gracza.
+		
+		* Zniszczenie statku kosmitów wywołuje obszarową eksplozję o niewielkim promieniu. Eksplozja może niszczyć asteroidy z siłą równą jednemu strzałowi z lasera, bądź uszkodzić tarcze gracza z siłą równą małej asteroidzie. PATRZ: Power-upy : Tarcza. PATRZ: Dodatki: Eksplozja*	
+		
+		???* Nowe typy kosmitów - czekam na propozycje Michała*???
+		* UFO mogą wpadać na asteroidy, tym samym rozbijając się o nią i wywołując Eksplozję. *
+	
+Punktacja:
+	Gracz zdobywa punkty za rozbijanie asteroid i zestrzeliwywanie ufoludków.
+	
+	Rozbicie dużej asteroidy: 1000 pts
+	Rozbicie średniej asteroidy: 1500 pts
+	Rozbicie dużej asteroidy: 2000 pts
+	Zestrzelenie Mr. Billa: 5000 pts
+	Zestrzelenie Slugga: 10000 pts
+	
+Asteroidy na planszy nie respawnują się na bieżąco. Grupa asteroid jest odnawiana dopiero po zestrzeleniu wszystkich. Wyczyszczenie planszy powoduje przejście na wyższy poziom i zwiększenie mnożnika punktacji. 
+Poziom trudności powinien rosnąć w nieskończoność.
+
+???*
+
+	Proponowany algorytm wzrostu poziomu trudności:
+
+(2 + level) duże asteroidy, (level - 1) ufoków (z losową szansą na jednoczesne wystąpienie obu)
+
+tj. level 1 - 3 d. asteroidy, 0 ufoków
+	level 2 - 4 d. asteroidy, 1 ufok
+	level 3 - 5 d. asteroid, 2 ufoki
+	etc. 
+
+*???
+
+??? DO PRZEDYSKUTOWANIA ???
+Z racji natury Asteroids ilość obiektów na planszy bezpośrednio przekłada się na trudność gry. Do rozważenia jest manipulacja kolejnymi ufokami i ich prędkością/celnością/agresywnością. W oryginalnych Asteroids od pewnego momentu (brak źródła, określona ilość punktów) Mr. Bill się nie pojawiał, za to Slugg stawał się coraz trudniejszy.
+
+??? * Power-ups * //cała sekcja jest nowa, wszystko do dyskusji // ???
+
+Wszystkie power-upy są losowo generowane z puli podczas rozbijania dowolnej asteroidy albo dezintegracji małej asteroidy, z prawdopodobieństwem 20%.
+Dodatkowe życia generowane są TYLKO za zestrzelenie UFO, z prawdopodobieństwem 50%. 
+
+	Tarcza
+		Chroni statek kosmiczny przed uderzeniem w skałę/kontaktem z pociskiem wystrzelonym przez UFO. 
+		Posiada TRZY poziomy naładowania. Aby osiągnąć najwyższy, trzeci poziom, należy zebrać power-up trzy razy.
+		Uderzenie dużą asteroidą zdejmuje TRZY poziomy naładowania (najłatwiej uniknąć, wolno leci).
+		Uderzenie średnią asteroidą zdejmuje DWA poziomy naładowania.
+		Uderzenie małą asteroidą zdejmuje JEDEN poziom naładowania.
+		Trafienie laserem ufoka zdejmuje JEDEN poziom naładowania.
+		Eksplozja zdejmuje JEDEN poziom naładowania.
+		Wszystkie poziomy tarczy przechodzą na kolejny poziom rozgrywki (po wyczyszczeniu planszy z asteroid).
+	
+	Potrójny strzał
+		Jeden poziom power-upa.
+		Po zebraniu, gracz wystrzeliwuje 3 pociski zamiast jednego.
+		Pociski wystrzeliwywane są pod kątem 45* w stosunku do osi statku. 
+		
+	Laser typu Gwiazda Śmierci
+		Jeden zebrany power-up to trzy strzały z lasera.
+		Promień lasera penetruje asteroidy i  statki UFO, tj. nie znika po trafieniu przeszkody.
+		Leci 3/4 długości mapy.
+		Wystrzelenie lasera następuje po ładowaniu go przez 3 sekundy.
+		Do wystrzelenia lasera potrzebny jest osobny przycisk. 
+		
+???* Dodatki: *???
+	Eksplozja 
+		Eksplozja wywoływana jest przez zestrzelenie dowolnego statku kosmitów.
+		Eksplozja ma średnicą równą trzem długościom statku kosmitów.
+		W zasięgu równym dwóm długościom UFO, eksplozja rozbija asteroidy.
+		W zasięgu równym dwóm długościom UFO, eksplozja niszczy tarcze o JEDEN poziom.
+		??? W zasięgu równym trzem długościom UFO, eksplozja powoduje zmianę toru ruchu asteroid. ??? /// PJ wypowiedz się na ten temat proszę, czy to da się w miarę łatwo zrobić?. Radek
+		
+
+=============== USER INTERFACE ===================
+
+Menu flow:
+
+Boot -> Title screen -> New game -> Gameplay -> Game Over Screen -> (if applicable) NEW Highscore Screen -> Leaderboards Screen  -> Replay
+					 -> Options				 -> Pause Menu		 ->								 		 ->						 -> Quit to Menu
+					 -> Credits														 											 -> Exit the Game
+					 -> Exit
+		
+
+Elementy interfejsu w gameplay'u:
+
+Licznik punktów x mnożnik - lewy górny róg ekranu
+Ilość żyć - prawy górny róg ekranu
+* Ikona posiadanej broni i poziom tarcz - lewy dolny róg ekranu *
+* Strzałki wskazujące kierunek nadlatujacego UFO - na krawędziach ekranu, gdy UFO jest poza zasięgiem widzenia *
+
+============== CONTROLS =================
+Menu: 
+	Strzałki góra/dół + enter do akceptacji
+	Myszka (klik na opcji)
+
+Gameplay:
+	Góra: przyspieszenie
+	Prawo/lewo: obrót
+	Spacja: Strzał
+	LShift: Laser (jeśli dostępny)
+	
+	Jeśli jakimś cudem zostanie czasu, proponuję zrobić wsparcie pod pada, LOVE ma do tego support.
+
+============== ASSET LIST ====================
+
+Statek kosmiczny: 
+	Statyczne:
+		Statek jako taki
+		Tarcza poziom 1
+		Tarcza poziom 2
+		Tarcza poziom 3
+	Animacje (3-4 klatki max):
+		Ogień z silników
+		Strzał z podstawowego blastera
+		Strzał z potrójnego blastera
+		Strzał z lasera
+		Zdjęcie tarczy
+		Zniszczenie statku
+	Dźwięk:
+		Po jednym dźwięku do każdej animacji. 
+		
+Asteroidy:
+	Statyczne:
+		Duża asteroida (3 warianty)
+		Średnia asteroida (3 warianty)
+		Mała asteroida (3 warianty)
+	Animacje:
+		Rozpad asteroidy (1 x każdy wariant, klatka wyjściowa -> wspólne klatki cząstek asteroidy)
+	Dźwięk:
+		Po jednym dźwięku dla każdego poziomu rozpadu
+		
+UFO:
+	Statyczne:
+		Mr. Bill
+		Slugg
+	Animacje:
+		Mr. Bill - ogień z silników
+		Slugg - ogień z silników
+		Mr. Bill - strzał
+		Slugg - strzał
+		Mr. Bill - zniszczenie statku
+		Slugg - zniszczenie statku
+	Dźwięk:
+		Po jednym dźwięku dla każdej animacji
+		Po jednym dźwięku ostrzegawczym tuż przed pojawieniem się danego statku
+
+	Inne statyczne:
+		Tło (kilka kafelków, random placement //PJ daj znać jak to widzisz technicznie, jedno wielkie tło czy generowane z kilku małych kafelków//
+		Ikony power-upów na planszy
+		Ikony power-upów w UI
+		
+	Inne animacje:
+		Chyba brak
+		
+	Inne dźwięki:
+		Power-up na planszy: tarcza
+		Power-up na planszy: potrójny strzał
+		Power-up na planszy: laser
+		Power-up zebrany: tarcza
+		Power-up zebrany: potrójny strzał
+		Power-up zebrany: laser
+		GAME OVER
+		Replay
+		New Highscore!
+		
+Czekam na uwagi.
