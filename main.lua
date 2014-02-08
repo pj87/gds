@@ -621,14 +621,14 @@ function reset_game_to_next_level()
 end 
 
 function love.load() 
-    bg = love.graphics.newImage("bg.png") 
-	statek = love.graphics.newImage("statek.png") 
-	pocisk = love.graphics.newImage("pocisk.png") 
-	duza_asteroida = love.graphics.newImage("duza_asteroida.png") 
-	srednia_asteroida = love.graphics.newImage("srednia_asteroida.png") 
-	mala_asteroida = love.graphics.newImage("mala_asteroida.png") 
+    bg = love.graphics.newImage("background.png") 
+	statek = love.graphics.newImage("ship_normal.png") 
+	pocisk = love.graphics.newImage("bullet.png") 
+	duza_asteroida = love.graphics.newImage("asteroid_big.png") 
+	srednia_asteroida = love.graphics.newImage("asteroid_medium.png") 
+	mala_asteroida = love.graphics.newImage("asteroid_small.png") 
 	enemy_img = love.graphics.newImage("enemy.png") 
-	mouse_pointer = love.graphics.newImage("mouse_pointer.png") 
+	mouse_pointer = love.graphics.newImage("enemy.png") 
 end
 
 function love.update(dt)
