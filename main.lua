@@ -334,7 +334,7 @@ function draw_shots()
 	
 	for i,v in ipairs(objects.enemy.shots) do 
 		if (v.active == true) then 
-			love.graphics.draw(pocisk, v.x, v.y) 
+			love.graphics.draw(pocisk_enemy1, v.x, v.y) 
 			love.graphics.print(v.x, v.x + 10, v.y) 
 			love.graphics.print(v.y, v.x + 10, v.y + 10) 
 		end 
@@ -624,11 +624,13 @@ function love.load()
     bg = love.graphics.newImage("background.png") 
 	statek = love.graphics.newImage("ship_normal.png") 
 	pocisk = love.graphics.newImage("bullet.png") 
+	pocisk_enemy1 = love.graphics.newImage("bullet_enemy.png") 
+	pocisk_enemy2 = love.graphics.newImage("bullet_enemy1.png") 
 	duza_asteroida = love.graphics.newImage("asteroid_big.png") 
 	srednia_asteroida = love.graphics.newImage("asteroid_medium.png") 
 	mala_asteroida = love.graphics.newImage("asteroid_small.png") 
 	enemy_img = love.graphics.newImage("enemy.png") 
-	mouse_pointer = love.graphics.newImage("enemy.png") 
+	--mouse_pointer = love.graphics.newImage("enemy.png") 
 end
 
 function love.update(dt)
